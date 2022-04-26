@@ -91,21 +91,28 @@ def live_Esoccer_total(task, send_msg):
     open_link(url)
     position = title_teams_len_check(teams)
     if position:
-        y_check = 381
+        Both_Teams_to_Score_y_check = 381
+        over_position_y = [465, 416]
     else:
-        y_check = 351
+        Both_Teams_to_Score_y_check = 351
+        over_position_y = [435, 386]
+    total = total_check(over_position_y)
+    if not total:
+        send_msg['msg'] = f'{var.bot_number}: ставка исчезла'
+        screenshot(send_msg['msg'])
+        return
     print('position total', position)
     for word in range(0, teams_len):
         if re.search(rf'{bet_team.strip().lower()}', str(re.sub(r'\s+', '', str(teams[word].strip().lower())))):
             send_msg['msg'] = f'{var.bot_number}: успешно поставил на {bet_option}'
             if word == 0:  # line 1
                 print("line 1")
-                y = Both_Teams_to_Score_check(word, y_check)
+                y = Both_Teams_to_Score_check(word, Both_Teams_to_Score_y_check)
                 point = [x, y]
                 break
             else:  # line 2
                 print("line 2")
-                y = Both_Teams_to_Score_check(word, y_check)
+                y = Both_Teams_to_Score_check(word, Both_Teams_to_Score_y_check)
                 point = [x, y]
                 break
     print(x, y)
