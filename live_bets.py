@@ -92,10 +92,10 @@ def live_Esoccer_total(task, send_msg):
     position = title_teams_len_check(teams)
     if position:
         Both_Teams_to_Score_y_check = 381
-        over_position_y = [465, 416]
+        over_position_y = [466, 416]
     else:
         Both_Teams_to_Score_y_check = 351
-        over_position_y = [435, 386]
+        over_position_y = [436, 386]
     total = total_check(over_position_y)
     if not total:
         send_msg['msg'] = f'{var.bot_number}: ставка исчезла'

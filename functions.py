@@ -44,11 +44,11 @@ def total_check(y_list):
     pyautogui.press('backspace')
     pyautogui.write('over')
     print('poisk...')
-    time.sleep(0.1)
-    if pyautogui.pixelMatchesColor(315, y_list[0], ((56, 216, 120) or (255, 255, 255))):
+    time.sleep(0.2)
+    if pyautogui.pixelMatchesColor(320, y_list[0], ((56, 216, 120) or (255, 255, 255))):
         print('vernulos true')
         return True
-    elif pyautogui.pixelMatchesColor(315, y_list[1], ((56, 216, 120) or (255, 255, 255))):
+    elif pyautogui.pixelMatchesColor(320, y_list[1], ((56, 216, 120) or (255, 255, 255))):
         print('vernulos true')
         return True
     else:
