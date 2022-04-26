@@ -5,6 +5,7 @@ import random
 from main import bot
 from PIL import Image
 import masks
+import easyocr
 
 
 def remain_window_check():
@@ -197,18 +198,18 @@ def team_search_on_page(teams):
     myScreenshot.save(masks.nolive_draws_page_screen)
 
 
-
-def team_search_on_screenshot(teams):
-    team1 = teams[0]
-    team2 = teams[1]
-
-def crop_a_particular_place(coordinates):
-    image_path = 'screenshot.jpg'
-    im = Image.open(image_path)
+def crop_a_particular_place(coordinates, image_path_open, croped_image_path_save):
+   # image_path = 'screenshot.jpg'
+    im = Image.open(image_path_open)
     left = coordinates[0]
     top = coordinates[1]
     right = coordinates[2]
     bottom = coordinates[3]
-    print(top, bottom)
     im = im.crop((left, top, right, bottom))
-    im.save(masks.cropped_img)
+    im.save(croped_image_path_save)
+
+
+def text_recognition(screen_path):
+    reader = easyocr.Reader(['hu', 'en'])
+    result = reader.readtext(screen_path)
+    return result
