@@ -174,7 +174,7 @@ def title_teams_len_check(teams):
     pyautogui.hotkey('ctrl', 'f')
     pyautogui.write(sign_to_write)
     time.sleep(0.5)
-    if pyautogui.pixelMatchesColor((84 or 232), 269, (((56, 216, 120) or (255, 255, 255)))): #2 строки
+    if pyautogui.pixelMatchesColor((84 or 220 or 320 or 411), 269, (((56, 216, 120) or (255, 255, 255)))): #2 строки
         position = True
     else: # 1строка
         position = False

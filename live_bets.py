@@ -73,7 +73,7 @@ def live_Esoccer_total(task, send_msg):
                 return
         elif re.search(r'\svs\s', str(line)):
             if n == 0:
-                teams = line[1:].split('vs')
+                teams = line[2:].split('vs')
                 n += 1
         elif re.search(r'Current Time', str(line)):
             curr_time = datetime.datetime.strptime(line[-5:], "%M:%S")
@@ -103,7 +103,7 @@ def live_Esoccer_total(task, send_msg):
         return
     print('position total', position)
     for word in range(0, teams_len):
-        if re.search(rf'{bet_team.strip().lower()}', str(re.sub(r'\s+', '', str(teams[word].strip().lower())))):
+        if re.match(rf'{bet_team.strip().lower()}', str(teams[word].strip().lower())):
             send_msg['msg'] = f'{var.bot_number}: успешно поставил на {bet_option}'
             if word == 0:  # line 1
                 print("line 1")
@@ -128,7 +128,7 @@ def live_basketball(teams, bet_option, bet_team, url, bet_option_for_msg, send_m
         if bet_name.strip() in abandoned_boys.ebasket_Fulltime_Asian_Hand_list:
             bot.send_message(var.uid, f'{var.bot_number}: Фора на {bet_name} - ставку пропускаю')
             return
-        bet_name = re.sub(r'\s+', '', str(bet_name))
+        #bet_name = re.sub(r'\s+', '', str(bet_name))
         teams = teams[1:].split('vs')
         teams_len = len(teams)
         print(teams)
@@ -139,7 +139,7 @@ def live_basketball(teams, bet_option, bet_team, url, bet_option_for_msg, send_m
         else:
             y = 424
         for word in range(0, teams_len):
-            if re.search(rf'{bet_name.strip().lower()}', str(re.sub(r'\s+', '', str(teams[word].strip().lower())))):
+            if re.match(rf'{bet_name.strip().lower()}', str(teams[word].strip().lower())):
                 send_msg['msg'] = f'{var.bot_number}: успешно поставил на {bet_option_for_msg}'
                 if word == 0:  # column 1
                     print("column 1")
