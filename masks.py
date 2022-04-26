@@ -1,0 +1,7 @@
+source_screen = 'screen.jpg'
+screen_ = 'screenshot.jpg'
+after_mask = 'screen_after_mask.jpg'
+cropped_img = 'cropped_img.jpg'
+nolive_draws_page_screen = 'screenshots/nolive_draws_page_screen.jpg'
+nolive_quantity_matches_found = 'screenshots/nolive_quantity_matches_found.jpg'
+nolive_draws_teams = 'screenshots/nolive_draws_teams.jpg'
