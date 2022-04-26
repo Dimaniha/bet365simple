@@ -3,6 +3,8 @@ import var
 import pyautogui
 import random
 from main import bot
+from PIL import Image
+import masks
 
 
 def remain_window_check():
@@ -39,16 +41,17 @@ def full_time_result_check_on_page(y_list):
     return point
 
 
-def total_check(y_list):
+def total_check(y_list, clubs, teams):
     pyautogui.hotkey('ctrl', 'f')
     pyautogui.press('backspace')
-    pyautogui.write('over')
+    sign_to_write = f'{clubs[0].strip()} ({teams[0].strip()}) esports goals'
+    pyautogui.write(sign_to_write)
     print('poisk...')
     time.sleep(0.2)
-    if pyautogui.pixelMatchesColor(320, y_list[0], ((56, 216, 120) or (255, 255, 255))):
+    if pyautogui.pixelMatchesColor(92, y_list[0], ((56, 216, 120) or (255, 255, 255))):
         print('vernulos true')
         return True
-    elif pyautogui.pixelMatchesColor(320, y_list[1], ((56, 216, 120) or (255, 255, 255))):
+    elif pyautogui.pixelMatchesColor(92, y_list[1], ((56, 216, 120) or (255, 255, 255))):
         print('vernulos true')
         return True
     else:
@@ -174,7 +177,13 @@ def title_teams_len_check(teams):
     pyautogui.hotkey('ctrl', 'f')
     pyautogui.write(sign_to_write)
     time.sleep(0.5)
-    if pyautogui.pixelMatchesColor((84 or 220 or 320 or 411), 269, (((56, 216, 120) or (255, 255, 255)))): #2 строки
+    if pyautogui.pixelMatchesColor(84, 269, (((56, 216, 120) or (255, 255, 255)))): #2 строки
+        position = True
+    elif pyautogui.pixelMatchesColor(220, 269, (((56, 216, 120) or (255, 255, 255)))): #2 строки
+        position = True
+    elif pyautogui.pixelMatchesColor(320, 269, (((56, 216, 120) or (255, 255, 255)))): #2 строки
+        position = True
+    elif pyautogui.pixelMatchesColor(411, 269, (((56, 216, 120) or (255, 255, 255)))): #2 строки
         position = True
     else: # 1строка
         position = False
@@ -184,8 +193,22 @@ def title_teams_len_check(teams):
 def team_search_on_page(teams):
     pyautogui.hotkey('ctrl', 'f')
     pyautogui.write(teams[0])
+    myScreenshot = pyautogui.screenshot()
+    myScreenshot.save(masks.nolive_draws_page_screen)
+
 
 
 def team_search_on_screenshot(teams):
     team1 = teams[0]
     team2 = teams[1]
+
+def crop_a_particular_place(coordinates):
+    image_path = 'screenshot.jpg'
+    im = Image.open(image_path)
+    left = coordinates[0]
+    top = coordinates[1]
+    right = coordinates[2]
+    bottom = coordinates[3]
+    print(top, bottom)
+    im = im.crop((left, top, right, bottom))
+    im.save(masks.cropped_img)

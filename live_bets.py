@@ -75,6 +75,8 @@ def live_Esoccer_total(task, send_msg):
             if n == 0:
                 teams = line[2:].split('vs')
                 n += 1
+            else:
+                clubs = line[2:].split('vs')
         elif re.search(r'Current Time', str(line)):
             curr_time = datetime.datetime.strptime(line[-5:], "%M:%S")
             a_timedelta = curr_time - datetime.datetime(1900, 1, 1)
@@ -92,15 +94,15 @@ def live_Esoccer_total(task, send_msg):
     position = title_teams_len_check(teams)
     if position:
         Both_Teams_to_Score_y_check = 381
-        over_position_y = [466, 416]
+        over_position_y = [429, 379]
     else:
         Both_Teams_to_Score_y_check = 351
-        over_position_y = [436, 386]
-    total = total_check(over_position_y)
+        over_position_y = [399, 349]
+    total = total_check(over_position_y, clubs, teams)
     if not total:
         send_msg['msg'] = f'{var.bot_number}: ставка исчезла'
         screenshot(send_msg['msg'])
-        return
+
     print('position total', position)
     for word in range(0, teams_len):
         if re.match(rf'{bet_team.strip().lower()}', str(teams[word].strip().lower())):

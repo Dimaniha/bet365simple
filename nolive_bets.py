@@ -12,6 +12,7 @@ def nolive_Esoccer_draw(task, send_msg):
                 teams = line[1:].split('vs')
                 n += 1
     open_link(url)
+
     pyautogui.click(x=557, y=382)
     time.sleep(1)
     make_bet(send_msg)
