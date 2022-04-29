@@ -157,7 +157,7 @@ def live_basketball(teams, bet_option, bet_team, url, bet_option_for_msg, send_m
 
 
 def live_football(task, send_msg):
-    for line in range(len(task)):
+    for line in range(len(task) - 1):
         if re.match(r'A1|A2|A4|A5', str(task[line])):
             print('some A')
             bet_option_for_msg = task[line+1]

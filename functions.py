@@ -2,11 +2,13 @@ import time
 import var
 import pyautogui
 import random
-from main import bot
+import telebot
 from PIL import Image
 import masks
 import easyocr
 
+
+bot = telebot.TeleBot(var.API_TOKEN)
 
 def remain_window_check():
     pyautogui.moveTo(622, 339)
@@ -23,10 +25,9 @@ def full_time_result_check(position):
     time.sleep(0.1)
     if position:
         y_list = [621, 660, 379, 428, 669, 652]
-        point = full_time_result_check_on_page(y_list)
     else:
         y_list = [591, 630, 349, 398, 639, 622]
-        point = full_time_result_check_on_page(y_list)
+    point = full_time_result_check_on_page(y_list)
     return point
 
 
@@ -163,6 +164,7 @@ def screenshot(send_msg):
 
 
 def is_point_clickable_check(point):
+
     pyautogui.moveTo(point[0], point[1])
     time.sleep(0.2)
     if pyautogui.pixelMatchesColor(point[0], point[1], (80, 80, 80)):
@@ -199,7 +201,6 @@ def team_search_on_page(teams):
 
 
 def crop_a_particular_place(coordinates, image_path_open, croped_image_path_save):
-   # image_path = 'screenshot.jpg'
     im = Image.open(image_path_open)
     left = coordinates[0]
     top = coordinates[1]
@@ -213,3 +214,41 @@ def text_recognition(screen_path):
     reader = easyocr.Reader(['hu', 'en'])
     result = reader.readtext(screen_path)
     return result
+
+
+def get_white_line_range(image_path):
+    photo = Image.open(image_path, "r")
+    width = photo.size[0]
+    height = photo.size[1]
+    x = width - 1
+    white_line_range = []
+    white_line_possible_range = set()
+    for y in reversed(range(height)):
+        RGB = photo.getpixel((x, y))
+        white_line_possible_range.add(RGB)
+        if y == height - 100:
+            break
+    if (240, 240, 240) in white_line_possible_range:  # с линией
+        with_line = True
+        print('vse matchi')
+    else:
+        with_line = False
+        print('stavka')
+    for y in range(height-400, height):
+        RGB = photo.getpixel((x, y))
+        #print(x, y, RGB)
+        if with_line:  # с линией
+            if RGB == (240, 240, 240) and photo.getpixel((x, y-1)) != (240, 240, 240):
+                white_line_range.append(y)
+            elif RGB == (240, 240, 240) and photo.getpixel((x, y+1)) != (240, 240, 240):
+                white_line_range.append(y)
+                break
+        else:  # без линии
+            if RGB == (241, 241, 241) and photo.getpixel((x, y-1)) != (241, 241, 241):
+                white_line_range.append(y)
+            elif RGB == (241, 241, 241) and photo.getpixel((x, y+1)) != (241, 241, 241):
+                white_line_range.append(y)
+    print(white_line_range)
+    return white_line_range, width
+
+

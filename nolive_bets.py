@@ -4,22 +4,28 @@ from functions import *
 
 def nolive_Esoccer_draw(task, send_msg):
     n = 0
+    print('taskk', task)
     for line in task:
         if re.search(r'https', str(line)):
             url = line
+            print(url)
         elif re.search(r'\svs\s', str(line)):
             if n == 0:
                 teams = line[1:].split('vs')
+                print('teams', teams)
                 n += 1
     open_link(url)
     team_search_on_page(teams)
-    coordinates = [770, 702, 780, 713]
+    coordinates = [756, 701, 780, 715]
     crop_a_particular_place(coordinates, masks.nolive_draws_page_screen, masks.nolive_quantity_matches_found)
-    quantity_matches_found = text_recognition(masks.nolive_quantity_matches_found)
+    quantity_matches_found = int(text_recognition(masks.nolive_quantity_matches_found)[0][1][-1:])
     print(quantity_matches_found)
     for iter in range(quantity_matches_found):
         try:
-            team_search_on_page(teams)
+            if iter != 0:
+                pyautogui.hotkey('enter')
+                team_search_on_page(teams)
+            time.sleep(0.2)
             coordinates = [232, 227, 537, 685]
             crop_a_particular_place(coordinates, masks.nolive_draws_page_screen, masks.nolive_draws_teams)
             teams_on_page = text_recognition(masks.nolive_draws_teams)
@@ -44,7 +50,6 @@ def nolive_Esoccer_draw(task, send_msg):
     is_point_clickable_check(point)
     print('clickable???', )
     pyautogui.click(x=point[0], y=point[1])
-    send_msg['msg'] = f'{var.bot_number}: успешно поставил на {task[0][1:]}'
     make_bet(send_msg)
 
 
@@ -74,3 +79,11 @@ def nolive_ice_hockey(url, bet_option, sport_type):
 
 def nolive_basketball(url, bet_option, sport_type):
     pass
+
+
+def nolive_bet_from_image(image_path):
+    white_line_range, width = get_white_line_range(image_path)
+    last_y_position = len(white_line_range) - 1
+    coordinates = [0, white_line_range[0], width, white_line_range[last_y_position]]
+    crop_a_particular_place(coordinates, image_path, masks.nolive_white_line)
+    result = text_recognition(masks.nolive_white_line)
