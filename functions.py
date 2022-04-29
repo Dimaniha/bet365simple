@@ -43,22 +43,20 @@ def full_time_result_check_on_page(y_list):
     return point
 
 
-def total_check(y_list, clubs, teams):
+def total_check():
     pyautogui.hotkey('ctrl', 'f')
     pyautogui.press('backspace')
-    sign_to_write = f'{clubs[0].strip()} ({teams[0].strip()}) esports goals'
+    sign_to_write = 'over'
     pyautogui.write(sign_to_write)
     print('poisk...')
     time.sleep(0.2)
-    if pyautogui.pixelMatchesColor(92, y_list[0], ((56, 216, 120) or (255, 255, 255))):
-        print('vernulos true')
-        return True
-    elif pyautogui.pixelMatchesColor(92, y_list[1], ((56, 216, 120) or (255, 255, 255))):
-        print('vernulos true')
-        return True
-    else:
+    if not pyautogui.pixelMatchesColor(663, 208, (103, 103, 103)):
+        pyautogui.click(x=663, y=208, button='left', clicks=5, interval=0.5)
         print('vernulos false')
         return False
+    else:
+        print('na meste')
+        return True
 
 
 def Both_Teams_to_Score_check(word, y_check):

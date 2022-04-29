@@ -1,7 +1,6 @@
 import re
 import datetime
 from functions import *
-from main import bot
 import abandoned_boys
 
 def live_table_tennis(teams, bet_option, bet_team, url):
@@ -94,11 +93,9 @@ def live_Esoccer_total(task, send_msg):
     position = title_teams_len_check(teams)
     if position:
         Both_Teams_to_Score_y_check = 381
-        over_position_y = [429, 379]
     else:
         Both_Teams_to_Score_y_check = 351
-        over_position_y = [399, 349]
-    total = total_check(over_position_y, clubs, teams)
+    total = total_check()
     if not total:
         send_msg['msg'] = f'{var.bot_number}: ставка исчезла'
         screenshot(send_msg['msg'])
