@@ -7,7 +7,6 @@ from PIL import Image
 import masks
 import easyocr
 
-
 bot = telebot.TeleBot(var.API_TOKEN)
 
 def remain_window_check():
@@ -49,6 +48,8 @@ def total_check():
     sign_to_write = 'over'
     pyautogui.write(sign_to_write)
     print('poisk...')
+    time.sleep(0.2)
+    pyautogui.moveTo(663, 208)
     time.sleep(0.2)
     if not pyautogui.pixelMatchesColor(663, 208, (103, 103, 103)):
         pyautogui.click(x=663, y=208, button='left', clicks=5, interval=0.5)
@@ -162,7 +163,6 @@ def screenshot(send_msg):
 
 
 def is_point_clickable_check(point):
-
     pyautogui.moveTo(point[0], point[1])
     time.sleep(0.2)
     if pyautogui.pixelMatchesColor(point[0], point[1], (80, 80, 80)):
@@ -191,11 +191,35 @@ def title_teams_len_check(teams):
     return position
 
 
-def team_search_on_page(teams):
+def search_on_page(sign_to_write):
     pyautogui.hotkey('ctrl', 'f')
-    pyautogui.write(teams[0])
-    myScreenshot = pyautogui.screenshot()
-    myScreenshot.save(masks.nolive_draws_page_screen)
+    pyautogui.write(sign_to_write)
+    time.sleep(0.3)
+
+
+def pixel_match_check():
+    x = 350
+    for y in range(192, 685):
+        pixel = pyautogui.pixel(x, y)
+        print(x, y, pixel)
+        if pyautogui.pixelMatchesColor(x, y, (56, 216, 120)):
+            point = [x, y]
+            time.sleep(2)
+            return point
+
+
+def is_team1_match():
+    if pyautogui.pixelMatchesColor(403, 236, (((56, 216, 120) or (255, 255, 255)))):
+        position = True
+    elif pyautogui.pixelMatchesColor(305, 236, (((56, 216, 120) or (255, 255, 255)))):
+        position = True
+    elif pyautogui.pixelMatchesColor(566, 236, (((56, 216, 120) or (255, 255, 255)))):
+        position = True
+    elif pyautogui.pixelMatchesColor(433, 236, (((56, 216, 120) or (255, 255, 255)))):
+        position = True
+    else:
+        position = False
+    return position
 
 
 def crop_a_particular_place(coordinates, image_path_open, croped_image_path_save):
@@ -211,6 +235,7 @@ def crop_a_particular_place(coordinates, image_path_open, croped_image_path_save
 def text_recognition(screen_path):
     reader = easyocr.Reader(['hu', 'en'])
     result = reader.readtext(screen_path)
+    print(result, 'result')
     return result
 
 

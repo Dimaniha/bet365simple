@@ -118,7 +118,7 @@ def start_process(pq, locker, send_msg):
             print(pq)
             print(len(pq))
             try:
-                pyautogui.hotkey(var.start_video_hotkey)
+                #pyautogui.hotkey(var.start_video_hotkey)
                 remain_window_check()
                 task = pq[0]
                 if re.search(r'#/IP/EV', str(task)):
@@ -128,7 +128,7 @@ def start_process(pq, locker, send_msg):
                     print("nashel nolive")
                     nolive(task, send_msg)
                 pq.remove(task)
-                pyautogui.hotkey(var.start_video_hotkey)
+                #pyautogui.hotkey(var.start_video_hotkey)
             except Exception as e:
                 print('эксепшон', e)
                 pq.remove(task)

@@ -3,6 +3,7 @@ import datetime
 from functions import *
 import abandoned_boys
 
+
 def live_table_tennis(teams, bet_option, bet_team, url):
     pass
 
@@ -99,7 +100,7 @@ def live_Esoccer_total(task, send_msg):
     if not total:
         send_msg['msg'] = f'{var.bot_number}: ставка исчезла'
         screenshot(send_msg['msg'])
-
+        return
     print('position total', position)
     for word in range(0, teams_len):
         if re.match(rf'{bet_team.strip().lower()}', str(teams[word].strip().lower())):
@@ -120,6 +121,31 @@ def live_Esoccer_total(task, send_msg):
     make_bet(send_msg)
 
 
+def live_basketball_total(task, send_msg):
+    print('total basket')
+    for line in task:
+        if line == task[0]:
+            bet_option = line[2:]
+            print(bet_option)
+            if re.search(r'over', str(bet_option.strip().lower())):
+                x = 282
+                print('over')
+            elif re.search(r'under', str(bet_option.strip().lower())):
+                x = 606
+                print('under')
+        elif re.search(r'https', str(line)):
+            url = line
+    send_msg['msg'] = f'{var.bot_number}: успешно поставил на {bet_option}'
+    open_link(url)
+    point = [x, 480]
+    pyautogui.click(x=111, y=324)
+    time.sleep(0.2)
+    is_point_clickable_check(point)
+    pyautogui.click(x=point[0], y=point[1])
+    make_bet(send_msg)
+
+
+
 def live_basketball(teams, bet_option, bet_team, url, bet_option_for_msg, send_msg):
     if re.search(r'Fulltime Asian Hand', str(bet_option)):
         print("hand")
@@ -127,7 +153,6 @@ def live_basketball(teams, bet_option, bet_team, url, bet_option_for_msg, send_m
         if bet_name.strip() in abandoned_boys.ebasket_Fulltime_Asian_Hand_list:
             bot.send_message(var.uid, f'{var.bot_number}: Фора на {bet_name} - ставку пропускаю')
             return
-        #bet_name = re.sub(r'\s+', '', str(bet_name))
         teams = teams[1:].split('vs')
         teams_len = len(teams)
         print(teams)
@@ -153,7 +178,12 @@ def live_basketball(teams, bet_option, bet_team, url, bet_option_for_msg, send_m
         make_bet(send_msg)
 
 
+
+
 def live_football(task, send_msg):
+    myScreenshot = pyautogui.screenshot()
+    myScreenshot.save(masks.live_football_page_screen)
+
     for line in range(len(task) - 1):
         if re.match(r'A1|A2|A4|A5', str(task[line])):
             print('some A')

@@ -12,43 +12,28 @@ def nolive_Esoccer_draw(task, send_msg):
         elif re.search(r'\svs\s', str(line)):
             if n == 0:
                 teams = line[1:].split('vs')
-                print('teams', teams)
                 n += 1
-    open_link(url)
-    team_search_on_page(teams)
-    coordinates = [756, 701, 780, 715]
-    crop_a_particular_place(coordinates, masks.nolive_draws_page_screen, masks.nolive_quantity_matches_found)
-    quantity_matches_found = int(text_recognition(masks.nolive_quantity_matches_found)[0][1][-1:])
-    print(quantity_matches_found)
-    for iter in range(quantity_matches_found):
-        try:
-            if iter != 0:
-                pyautogui.hotkey('enter')
-                team_search_on_page(teams)
-            time.sleep(0.2)
-            coordinates = [232, 227, 537, 685]
-            crop_a_particular_place(coordinates, masks.nolive_draws_page_screen, masks.nolive_draws_teams)
-            teams_on_page = text_recognition(masks.nolive_draws_teams)
-            for i in range(len(teams_on_page) - 1):
-                if re.search(fr'{teams[0]}', str(teams_on_page[i][1].lower().strip())) and \
-                        re.search(rf'{teams[1]}', str(teams_on_page[i+1][1].lower().strip())):
-                    team1_coords = teams_on_page[i][0][0]
-                    print('nashelk')
-                    break
-            print(team1_coords)
-        except UnboundLocalError as e:
-            print('unbound', e)
-            continue
-        else:
+            else:
+                clubs = line[2:].split('vs')
+    for iter in range(5):
+        open_link(url)
+        sign_to_write = f'{clubs[1].strip()} ({teams[1].strip()}) esports'
+        search_on_page(sign_to_write)
+        if iter != 0:
+            pyautogui.press('enter', presses=iter)
+        point = pixel_match_check()
+        pyautogui.click(x=point[0], y=point[1])
+        sign_to_write = f'({teams[0].strip()}) esports'
+        search_on_page(sign_to_write)
+        team1 = is_team1_match()
+        print('position', team1)
+        if team1:
+            point = [594, 414]
             break
-    pyautogui.click(x=team1_coords[0], y=team1_coords[1])
-    time.sleep(1)
-    position = title_teams_len_check(teams)
-    print('position', position)
-    point = full_time_result_check(position)
-    print(point)
+        else:
+            continue
     is_point_clickable_check(point)
-    print('clickable???', )
+    print('clickable???')
     pyautogui.click(x=point[0], y=point[1])
     make_bet(send_msg)
 
@@ -87,3 +72,4 @@ def nolive_bet_from_image(image_path):
     coordinates = [0, white_line_range[0], width, white_line_range[last_y_position]]
     crop_a_particular_place(coordinates, image_path, masks.nolive_white_line)
     result = text_recognition(masks.nolive_white_line)
+

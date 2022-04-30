@@ -7,7 +7,10 @@ def live(task, send_msg):
     for line in task[1]:
         if line == task[1][0]:
             if re.search(r'Under|Over', str(line)):
-                live_Esoccer_total(task[1], send_msg)
+                if re.search(r'Halftime', str(line)):
+                    live_basketball_total(task[1], send_msg)
+                else:
+                    live_Esoccer_total(task[1], send_msg)
                 break
             elif re.search(r'Draw', str(line)):
                 print('draw')
