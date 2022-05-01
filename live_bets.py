@@ -178,37 +178,39 @@ def live_basketball(teams, bet_option, bet_team, url, bet_option_for_msg, send_m
         make_bet(send_msg)
 
 
-
-
 def live_football(task, send_msg):
-    myScreenshot = pyautogui.screenshot()
-    myScreenshot.save(masks.live_football_page_screen)
-
+    for line in task:
+        if re.match(r'bet365.com', str(line)):
+            url = line
     for line in range(len(task) - 1):
-        if re.match(r'A1|A2|A4|A5', str(task[line])):
+        if re.match(r'#A1|#A2|#A4|#A5', str(task[line])):
             print('some A')
             bet_option_for_msg = task[line+1]
             if re.search(r'Home win ht', str(bet_option_for_msg)):
                 print('half time left')
+                sign_to_write = 'half'
+                #home = (x=178, y=390)
+                #away = (x=601, y=398)
                 point = []
-                click_and_bet(point, send_msg, bet_option_for_msg)
             elif re.search(r'Away win ht', str(bet_option_for_msg)):
                 print('half time right')
                 point = []
-                click_and_bet(point, send_msg, bet_option_for_msg)
             elif re.search(r'Home handicap', str(bet_option_for_msg)):
                 print('handicap left')
                 point = []
-                click_and_bet(point, send_msg, bet_option_for_msg)
             elif re.search(r'Away handicap', str(bet_option_for_msg)):
                 print('handicap right')
                 point = []
-                click_and_bet(point, send_msg, bet_option_for_msg)
             elif re.search(r'Total over', str(bet_option_for_msg)):
                 print(' left')
+                #match goals = (x=98, y=432)
+                #over = (x=354, y=501)
+                #under = (x=499, y=500)
                 point = []
-                click_and_bet(point, send_msg, bet_option_for_msg)
             elif re.search(r'Total under', str(bet_option_for_msg)):
                 print(' right')
                 point = []
-                click_and_bet(point, send_msg, bet_option_for_msg)
+            click_and_bet(point, send_msg, bet_option_for_msg, url, sign_to_write)
+           # fulltime result = (x=94, y=433)
+            #home =(x=195, y=494)
+            #away = (x=599, y=492)

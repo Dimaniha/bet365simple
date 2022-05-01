@@ -26,19 +26,20 @@ def full_time_result_check(position):
         y_list = [621, 660, 379, 428, 669, 652]
     else:
         y_list = [591, 630, 349, 398, 639, 622]
-    point = full_time_result_check_on_page(y_list)
+    x_list = [123, 371]
+    point = full_time_result_check_on_page(x_list, y_list)
     return point
 
 
-def full_time_result_check_on_page(y_list):
-    if pyautogui.pixelMatchesColor(123, y_list[0], ((56, 216, 120) or (255, 255, 255))):
-        point = [371, y_list[1]]
-    elif pyautogui.pixelMatchesColor(123, y_list[2], ((56, 216, 120) or (255, 255, 255))):
-        point = [371, y_list[3]]
-    elif pyautogui.pixelMatchesColor(123, y_list[4], ((56, 216, 120) or (255, 255, 255))):
+def full_time_result_check_on_page(x_list, y_list):
+    if pyautogui.pixelMatchesColor(x_list[0], y_list[0], ((56, 216, 120) or (255, 255, 255))):
+        point = [x_list[1], y_list[1]]
+    elif pyautogui.pixelMatchesColor(x_list[0], y_list[2], ((56, 216, 120) or (255, 255, 255))):
+        point = [x_list[1], y_list[3]]
+    elif pyautogui.pixelMatchesColor(x_list[0], y_list[4], ((56, 216, 120) or (255, 255, 255))):
         pyautogui.press('down')
         time.sleep(1)
-        point = [371, y_list[5]]
+        point = [x_list[1], y_list[5]]
     return point
 
 
@@ -81,12 +82,6 @@ def Both_Teams_to_Score_check(word, y_check):
             else:
                 y = y_check + 190
             return y
-
-
-def click_and_bet(point, send_msg, bet_option_for_msg):
-    send_msg['msg'] = f'{var.bot_number}: успешно поставил на {bet_option_for_msg}'
-    pyautogui.click(x=point[0], y=point[1])
-    make_bet(send_msg)
 
 
 def open_link(url):
@@ -197,13 +192,26 @@ def search_on_page(sign_to_write):
     time.sleep(0.3)
 
 
-def pixel_match_check():
-    x = 350
-    for y in range(192, 685):
-        pixel = pyautogui.pixel(x, y)
-        print(x, y, pixel)
-        if pyautogui.pixelMatchesColor(x, y, (56, 216, 120)):
-            point = [x, y]
+def click_and_bet(point, send_msg, bet_option_for_msg, url, sign_to_write):
+    open_link(url)
+    search_on_page(sign_to_write)
+    x, y = [49, 542], 304
+    pixel_match_check_horizontal(x, y)
+
+    send_msg['msg'] = f'{var.bot_number}: успешно поставил на {bet_option_for_msg}'
+    pyautogui.click(x=point[0], y=point[1])
+    make_bet(send_msg)
+
+
+def pixel_match_check_horizontal(x, y):
+    pass
+
+def pixel_match_check_vertical(x, y):
+    for y_ in range(y[0], y[1]):
+        pixel = pyautogui.pixel(x, y_)
+        print(x, y_, pixel)
+        if pyautogui.pixelMatchesColor(x, y_, (56, 216, 120)):
+            point = [x, y_]
             time.sleep(2)
             return point
 

@@ -99,7 +99,7 @@ def start(pq, locker, send_msg):
                 elif re.search(r'https://', str(line)) and not re.search(r'www.bet365.com', str(line)):
                     bot.send_message(var.uid, f'{var.bot_number}: Линия другого букмекера. Ставку пропускаю.')
                     break
-                elif re.search(r'bet365.dk', str(line)):
+                elif re.match(r'bet365.com', str(line)):
                     p.add_new(answer, pq, priority=0)
                     break
 

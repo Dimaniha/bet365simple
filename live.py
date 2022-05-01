@@ -1,3 +1,5 @@
+import re
+
 from live_bets import *
 
 
@@ -20,9 +22,8 @@ def live(task, send_msg):
                 bet_option_for_msg = line[1:]
                 bet_option = line[1:].split('-')[0]
                 bet_team = line[1:].split('-', 1)[1]
-        elif re.search(r'bet365.dk', str(line)):
-            url = re.sub(r'bet365.dk', 'bet365.com', str(line))
-            open_link(url)
+        elif re.match(r'#A1|#A2|#A4|#A5', str(line)):
+            print('some A')
             live_football(task[1], send_msg)
             break
         elif re.search(r'\svs\s', str(line)):
