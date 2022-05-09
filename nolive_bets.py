@@ -1,6 +1,3 @@
-import re
-import time
-
 from functions import *
 
 
@@ -35,6 +32,10 @@ def nolive_Esoccer_draw(task, send_msg):
         print('position', team1)
         if team1:
             break
+        elif iter == 4 and not team1:
+            send_msg['msg'] = f'{var.bot_number}: совпадений не найдено'
+            screenshot(send_msg['msg'])
+            return
         else:
             continue
     sign_to_write = 'full time result'

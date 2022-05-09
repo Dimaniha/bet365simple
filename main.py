@@ -132,7 +132,7 @@ def start_process(pq, locker, send_msg):
             except Exception as e:
                 print('эксепшон', e)
                 pq.remove(task)
-
+                # pyautogui.hotkey(var.start_video_hotkey)
 
 def location_():  # определение коорд указателя для тестов
     time.sleep(7)

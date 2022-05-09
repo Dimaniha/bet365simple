@@ -1,4 +1,3 @@
-import re
 import datetime
 from functions import *
 import abandoned_boys
@@ -139,7 +138,7 @@ def live_basketball_total(task, send_msg):
     open_link(url)
     point = [x, 480]
     pyautogui.click(x=111, y=324)
-    time.sleep(0.2)
+    time.sleep(1)
     is_point_clickable_check(point)
     pyautogui.click(x=point[0], y=point[1])
     make_bet(send_msg)
@@ -182,35 +181,30 @@ def live_football(task, send_msg):
     for line in task:
         if re.match(r'bet365.com', str(line)):
             url = line
+            break
+    open_link(url)
     for line in range(len(task) - 1):
         if re.match(r'#A1|#A2|#A4|#A5', str(task[line])):
             print('some A')
             bet_option_for_msg = task[line+1]
-            if re.search(r'Home win ht', str(bet_option_for_msg)):
-                print('half time left')
-                sign_to_write = 'half'
-                #home = (x=178, y=390)
-                #away = (x=601, y=398)
-                point = []
-            elif re.search(r'Away win ht', str(bet_option_for_msg)):
-                print('half time right')
-                point = []
-            elif re.search(r'Home handicap', str(bet_option_for_msg)):
-                print('handicap left')
-                point = []
-            elif re.search(r'Away handicap', str(bet_option_for_msg)):
-                print('handicap right')
-                point = []
-            elif re.search(r'Total over', str(bet_option_for_msg)):
-                print(' left')
-                #match goals = (x=98, y=432)
-                #over = (x=354, y=501)
-                #under = (x=499, y=500)
-                point = []
-            elif re.search(r'Total under', str(bet_option_for_msg)):
-                print(' right')
-                point = []
-            click_and_bet(point, send_msg, bet_option_for_msg, url, sign_to_write)
-           # fulltime result = (x=94, y=433)
-            #home =(x=195, y=494)
-            #away = (x=599, y=492)
+            if re.search(r'Home|over', str(bet_option_for_msg)):
+                x = 178
+                left = True
+            elif re.search(r'Away|under', str(bet_option_for_msg)):
+                x = 601
+                left = False
+            else:
+                bot.send_message(var.uid, f'{var.bot_number}: Обнаружена неведомая хрень - '
+                                          f'{bet_option_for_msg}')
+                continue
+            print(left, 'left')
+            sign_to_write = football_sign_to_write_determining(bet_option_for_msg)
+            search_on_page(sign_to_write)
+            x_4_search, y_4_search = [67, 634], 305
+            point = pixel_match_check_horizontal(x_4_search, y_4_search)
+            pyautogui.click(x=point[0], y=point[1])
+            time.sleep(1)
+            point = football_bet_point_determining(sign_to_write, left, bet_option_for_msg)
+            send_msg['msg'] = f'{var.bot_number}: успешно поставил на {bet_option_for_msg}'
+            pyautogui.click(x=point[0], y=point[1])
+            make_bet(send_msg)
