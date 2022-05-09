@@ -407,19 +407,3 @@ def asian_lines_point_determining(bet_option, x_4_search, y_4_search):
         return True, point
     else:
         return False, None
-
-'''
-    elif re.search(r'handicap', str(bet_option_for_msg)):
-        print('handicap left')
-        sign_to_write = 'asian lines'
-        с(x=160, y=450)
-        если да то ентер жмет и(x=189, y=494)
-        если нет то(x=189, y=494)
-        поиск с y = 376) до y = 684)
-    elif re.search(r'handicap', str(bet_option_for_msg)):
-        print('handicap right')
-        point = []
-        кнтрл + ф + ентер с(x=470, y=448)
-        если да  то ентер и(x=495, y=494)
-        если нет то(x=495, y=494)
-'''
