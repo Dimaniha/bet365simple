@@ -171,18 +171,23 @@ def screenshot(send_msg):
     bot.send_photo(var.uid, open(var.feedback_screenshot, 'rb'), caption=send_msg)
 
 
-def is_point_clickable_check(point, n):
+def is_point_clickable_check(point):
     pyautogui.moveTo(point[0], point[1])
     time.sleep(0.2)
-    if pyautogui.pixelMatchesColor(point[0], point[1], (80, 80, 80)):
-        time.sleep(2)
-        print('затемнение кнопки')
-        if n > 40:
-            return
+    n = 0
+    while True:
+        if pyautogui.pixelMatchesColor(point[0], point[1], (80, 80, 80)):
+            time.sleep(2)
+            print('затемнение кнопки')
+            time.sleep(1)
+            n += 1
+            if n == 20:
+                print('20 сек прошло')
+                send_msg['msg'] = f'{var.bot_number}: Кнопка ставки была неактивна 20 секунд'
+                screenshot(send_msg['msg'])
+                return False
         else:
-            is_point_clickable_check(point, n)
-    else:
-        return
+            return True
 
 
 def title_teams_len_check(teams):
