@@ -5,11 +5,9 @@ import random
 import telebot
 from PIL import Image
 import masks
-import easyocr
 import re
 
 bot = telebot.TeleBot(var.API_TOKEN)
-
 
 def remain_window_check():
     pyautogui.moveTo(622, 339)
@@ -158,6 +156,7 @@ def make_bet(send_msg):
     screenshot(send_msg['msg'])
     time.sleep(random.random())
     pyautogui.click(x=705, y=445)
+    clear_search_window()
 
 
 def clear_search_window():
@@ -195,15 +194,15 @@ def title_teams_len_check(teams):
     pyautogui.hotkey('ctrl', 'f')
     pyautogui.write(sign_to_write)
     time.sleep(0.5)
-    if pyautogui.pixelMatchesColor(84, 269, (((56, 216, 120) or (255, 255, 255)))):  # 2 строки
+    if pyautogui.pixelMatchesColor(84, 269, (((56, 216, 120) or (255, 255, 255)))): #2 строки
         position = True
-    elif pyautogui.pixelMatchesColor(220, 269, (((56, 216, 120) or (255, 255, 255)))):  # 2 строки
+    elif pyautogui.pixelMatchesColor(220, 269, (((56, 216, 120) or (255, 255, 255)))): #2 строки
         position = True
-    elif pyautogui.pixelMatchesColor(320, 269, (((56, 216, 120) or (255, 255, 255)))):  # 2 строки
+    elif pyautogui.pixelMatchesColor(320, 269, (((56, 216, 120) or (255, 255, 255)))): #2 строки
         position = True
-    elif pyautogui.pixelMatchesColor(411, 269, (((56, 216, 120) or (255, 255, 255)))):  # 2 строки
+    elif pyautogui.pixelMatchesColor(411, 269, (((56, 216, 120) or (255, 255, 255)))): #2 строки
         position = True
-    else:  # 1строка
+    else: # 1строка
         position = False
     return position
 
@@ -260,13 +259,6 @@ def crop_a_particular_place(coordinates, image_path_open, croped_image_path_save
     im.save(croped_image_path_save)
 
 
-def text_recognition(screen_path):
-    reader = easyocr.Reader(['hu', 'en'])
-    result = reader.readtext(screen_path)
-    print(result, 'result')
-    return result
-
-
 def get_white_line_range(image_path):
     photo = Image.open(image_path, "r")
     width = photo.size[0]
@@ -285,19 +277,19 @@ def get_white_line_range(image_path):
     else:
         with_line = False
         print('stavka')
-    for y in range(height - 400, height):
+    for y in range(height-400, height):
         RGB = photo.getpixel((x, y))
-        # print(x, y, RGB)
+        #print(x, y, RGB)
         if with_line:  # с линией
-            if RGB == (240, 240, 240) and photo.getpixel((x, y - 1)) != (240, 240, 240):
+            if RGB == (240, 240, 240) and photo.getpixel((x, y-1)) != (240, 240, 240):
                 white_line_range.append(y)
-            elif RGB == (240, 240, 240) and photo.getpixel((x, y + 1)) != (240, 240, 240):
+            elif RGB == (240, 240, 240) and photo.getpixel((x, y+1)) != (240, 240, 240):
                 white_line_range.append(y)
                 break
         else:  # без линии
-            if RGB == (241, 241, 241) and photo.getpixel((x, y - 1)) != (241, 241, 241):
+            if RGB == (241, 241, 241) and photo.getpixel((x, y-1)) != (241, 241, 241):
                 white_line_range.append(y)
-            elif RGB == (241, 241, 241) and photo.getpixel((x, y + 1)) != (241, 241, 241):
+            elif RGB == (241, 241, 241) and photo.getpixel((x, y+1)) != (241, 241, 241):
                 white_line_range.append(y)
     print(white_line_range)
     return white_line_range, width
@@ -353,7 +345,6 @@ def football_bet_point_determining(sign_to_write, left, bet_option):
         except Exception as e:
             print(e)
         print(bet_option)
-
         if left:
             point = asian_lines_complex(bet_option)
         else:

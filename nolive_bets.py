@@ -79,10 +79,5 @@ def nolive_basketball(url, bet_option, sport_type):
     pass
 
 
-def nolive_bet_from_image(image_path):
-    white_line_range, width = get_white_line_range(image_path)
-    last_y_position = len(white_line_range) - 1
-    coordinates = [0, white_line_range[0], width, white_line_range[last_y_position]]
-    crop_a_particular_place(coordinates, image_path, masks.nolive_white_line)
-    result = text_recognition(masks.nolive_white_line)
+
 
