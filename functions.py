@@ -183,8 +183,8 @@ def is_point_clickable_check(point):
             n += 1
             if n == 20:
                 print('20 сек прошло')
-                send_msg['msg'] = f'{var.bot_number}: Кнопка ставки была неактивна 20 секунд'
-                screenshot(send_msg['msg'])
+                send_msg = f'{var.bot_number}: Кнопка ставки была неактивна 20 секунд'
+                screenshot(send_msg)
                 return False
         else:
             return True
