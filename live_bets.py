@@ -1,4 +1,6 @@
 ﻿import datetime
+import time
+
 from functions import *
 import abandoned_boys
 
@@ -193,6 +195,7 @@ def live_football(task, send_msg):
             url = line
             break
     open_link(url)
+    time.sleep(2)
     for line in range(len(task) - 1):
         if re.match(r'#A1|#A2|#A4|#A5', str(task[line])):
             print('some A')

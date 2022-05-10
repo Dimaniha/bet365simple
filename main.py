@@ -128,6 +128,8 @@ def start_process(pq, locker, send_msg):
                     print("nashel nolive")
                     nolive(task, send_msg)
                 pq.remove(task)
+                if len(pq) == 0:
+                    pyautogui.click(x=418, y=155)
                 pyautogui.hotkey(var.start_video_hotkey)
             except Exception as e:
                 print('эксепшон', e)
