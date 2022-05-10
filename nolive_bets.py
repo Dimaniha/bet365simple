@@ -20,8 +20,8 @@ def nolive_Esoccer_draw(task, send_msg):
         search_on_page(sign_to_write)
         if iter != 0:
             pyautogui.press('enter', presses=iter)
-        x, y = 350, [192, 685]
-        point = pixel_match_check_vertical(x, y)
+        x, y, step = 350, [192, 685], 3
+        point = pixel_match_check_vertical(x, y, step)
         pyautogui.click(x=point[0], y=point[1])
         time.sleep(2)
         sign_to_write = f'({teams[0].strip()}) esports'

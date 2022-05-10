@@ -10,6 +10,7 @@ import re
 
 bot = telebot.TeleBot(var.API_TOKEN)
 
+
 def remain_window_check():
     pyautogui.moveTo(622, 339)
     time.sleep(random.random())
@@ -157,6 +158,9 @@ def make_bet(send_msg):
     screenshot(send_msg['msg'])
     time.sleep(random.random())
     pyautogui.click(x=705, y=445)
+
+
+def clear_search_window():
     pyautogui.hotkey('ctrl', 'f')
     pyautogui.press('backspace')
 
@@ -186,15 +190,15 @@ def title_teams_len_check(teams):
     pyautogui.hotkey('ctrl', 'f')
     pyautogui.write(sign_to_write)
     time.sleep(0.5)
-    if pyautogui.pixelMatchesColor(84, 269, (((56, 216, 120) or (255, 255, 255)))): #2 строки
+    if pyautogui.pixelMatchesColor(84, 269, (((56, 216, 120) or (255, 255, 255)))):  # 2 строки
         position = True
-    elif pyautogui.pixelMatchesColor(220, 269, (((56, 216, 120) or (255, 255, 255)))): #2 строки
+    elif pyautogui.pixelMatchesColor(220, 269, (((56, 216, 120) or (255, 255, 255)))):  # 2 строки
         position = True
-    elif pyautogui.pixelMatchesColor(320, 269, (((56, 216, 120) or (255, 255, 255)))): #2 строки
+    elif pyautogui.pixelMatchesColor(320, 269, (((56, 216, 120) or (255, 255, 255)))):  # 2 строки
         position = True
-    elif pyautogui.pixelMatchesColor(411, 269, (((56, 216, 120) or (255, 255, 255)))): #2 строки
+    elif pyautogui.pixelMatchesColor(411, 269, (((56, 216, 120) or (255, 255, 255)))):  # 2 строки
         position = True
-    else: # 1строка
+    else:  # 1строка
         position = False
     return position
 
@@ -205,8 +209,9 @@ def search_on_page(sign_to_write):
     time.sleep(0.3)
 
 
-def pixel_match_check_horizontal(x, y):
-    for x_ in range(x[0], x[1]):
+def pixel_match_check_horizontal(x, y, step):
+    for x_ in range(x[0], x[1], step):
+        pyautogui.moveTo(x_, y)
         pixel = pyautogui.pixel(x_, y)
         print(x_, y, pixel)
         if pyautogui.pixelMatchesColor(x_, y, (56, 216, 120)):
@@ -215,8 +220,9 @@ def pixel_match_check_horizontal(x, y):
             return point
 
 
-def pixel_match_check_vertical(x, y):
-    for y_ in range(y[0], y[1]):
+def pixel_match_check_vertical(x, y, step):
+    for y_ in range(y[0], y[1], step):
+        pyautogui.moveTo(x, y_)
         pixel = pyautogui.pixel(x, y_)
         print(x, y_, pixel)
         if pyautogui.pixelMatchesColor(x, y_, (56, 216, 120)):
@@ -274,19 +280,19 @@ def get_white_line_range(image_path):
     else:
         with_line = False
         print('stavka')
-    for y in range(height-400, height):
+    for y in range(height - 400, height):
         RGB = photo.getpixel((x, y))
-        #print(x, y, RGB)
+        # print(x, y, RGB)
         if with_line:  # с линией
-            if RGB == (240, 240, 240) and photo.getpixel((x, y-1)) != (240, 240, 240):
+            if RGB == (240, 240, 240) and photo.getpixel((x, y - 1)) != (240, 240, 240):
                 white_line_range.append(y)
-            elif RGB == (240, 240, 240) and photo.getpixel((x, y+1)) != (240, 240, 240):
+            elif RGB == (240, 240, 240) and photo.getpixel((x, y + 1)) != (240, 240, 240):
                 white_line_range.append(y)
                 break
         else:  # без линии
-            if RGB == (241, 241, 241) and photo.getpixel((x, y-1)) != (241, 241, 241):
+            if RGB == (241, 241, 241) and photo.getpixel((x, y - 1)) != (241, 241, 241):
                 white_line_range.append(y)
-            elif RGB == (241, 241, 241) and photo.getpixel((x, y+1)) != (241, 241, 241):
+            elif RGB == (241, 241, 241) and photo.getpixel((x, y + 1)) != (241, 241, 241):
                 white_line_range.append(y)
     print(white_line_range)
     return white_line_range, width
@@ -316,93 +322,70 @@ def football_bet_point_determining(sign_to_write, left, bet_option):
         else:
             point = [601, 416]
     elif sign_to_write == 'all':
+        sign_to_write = 'fulltime result'
+        search_on_page(sign_to_write)
+        x, y, step = 110, [192, 685], 3
+        point = pixel_match_check_vertical(x, y, step)
         if left:
-            point = [209, 416]
+            point = [163, point[1] + 60]
         else:
-            point = [601, 416]
+            point = [578, point[1] + 60]
     elif sign_to_write == 'goals':
         sign_to_write = 'match goals'
         search_on_page(sign_to_write)
-        x, y = 110, [192, 685]
-        point = pixel_match_check_vertical(x, y)
+        x, y, step = 110, [192, 685], 3
+        point = pixel_match_check_vertical(x, y, step)
         if left:
-            point = [371, point[1]+76]
+            point = [371, point[1] + 76]
         else:
-            point = [604, point[1]+76]
+            point = [604, point[1] + 76]
     elif sign_to_write == 'asian lines':
         bet_option = bet_option[:-1].split('(')[1]
+        try:
+            if int(bet_option) == 0:
+                bet_option = bet_option + '.0'
+                zero = True
+        except Exception as e:
+            print(e)
         print(bet_option)
+
         if left:
-            x_4_search, y_4_search = 166, [376, 684]
-            on_line, point = asian_lines_point_determining(bet_option, x_4_search, y_4_search)
-            if on_line:
-                pyautogui.hotkey('enter')
-                x_4_search, y_4_search = 203, [376, 684]
-                on_line, point = asian_lines_point_determining(bet_option, x_4_search, y_4_search)
-            else:
-                x_4_search, y_4_search = 203, [376, 684]
-                on_line, point = asian_lines_point_determining(bet_option, x_4_search, y_4_search)
+            point = asian_lines_complex(bet_option)
         else:
-            x_4_search, y_4_search = 166, [376, 684]
-            on_line, point = asian_lines_point_determining(bet_option, x_4_search, y_4_search)
-            if on_line:
-                pyautogui.hotkey('enter')
-                x_4_search, y_4_search = 203, [376, 684]
-                on_line, point = asian_lines_point_determining(bet_option, x_4_search, y_4_search)
-                if on_line:
-                    pyautogui.hotkey('enter')
-                    x_4_search, y_4_search = 473, [376, 684]
-                    on_line, point = asian_lines_point_determining(bet_option, x_4_search, y_4_search)
-                    if on_line:
-                        pyautogui.hotkey('enter')
-                        x_4_search, y_4_search = 504, [376, 684]
-                        on_line, point = asian_lines_point_determining(bet_option, x_4_search, y_4_search)
-                    else:
-                        x_4_search, y_4_search = 504, [376, 684]
-                        on_line, point = asian_lines_point_determining(bet_option, x_4_search, y_4_search)
-                else:
-                    x_4_search, y_4_search = 473, [376, 684]
-                    on_line, point = asian_lines_point_determining(bet_option, x_4_search, y_4_search)
-                    if on_line:
-                        pyautogui.hotkey('enter')
-                        x_4_search, y_4_search = 504, [376, 684]
-                        on_line, point = asian_lines_point_determining(bet_option, x_4_search, y_4_search)
-                    else:
-                        x_4_search, y_4_search = 504, [376, 684]
-                        on_line, point = asian_lines_point_determining(bet_option, x_4_search, y_4_search)
-            else:
-                x_4_search, y_4_search = 203, [376, 684]
-                on_line, point = asian_lines_point_determining(bet_option, x_4_search, y_4_search)
-                if on_line:
-                    pyautogui.hotkey('enter')
-                    x_4_search, y_4_search = 473, [376, 684]
-                    on_line, point = asian_lines_point_determining(bet_option, x_4_search, y_4_search)
-                    if on_line:
-                        pyautogui.hotkey('enter')
-                        x_4_search, y_4_search = 504, [376, 684]
-                        on_line, point = asian_lines_point_determining(bet_option, x_4_search, y_4_search)
-                    else:
-                        x_4_search, y_4_search = 504, [376, 684]
-                        on_line, point = asian_lines_point_determining(bet_option, x_4_search, y_4_search)
-                else:
-                    x_4_search, y_4_search = 473, [376, 684]
-                    on_line, point = asian_lines_point_determining(bet_option, x_4_search, y_4_search)
-                    if on_line:
-                        pyautogui.hotkey('enter')
-                        x_4_search, y_4_search = 504, [376, 684]
-                        on_line, point = asian_lines_point_determining(bet_option, x_4_search, y_4_search)
-                    else:
-                        x_4_search, y_4_search = 504, [376, 684]
-                        on_line, point = asian_lines_point_determining(bet_option, x_4_search, y_4_search)
+            try:
+                if zero:
+                    point = asian_lines_complex(bet_option)
+                    point[0] = 420
+            except Exception as e:
+                print(e)
+                if re.match(r'-', str(bet_option)):
+                    bet_option = re.sub(r'-', '+', str(bet_option))
+                elif re.match(r'\+', str(bet_option)):
+                    bet_option = re.sub(r'\+', '-', str(bet_option))
+                point = asian_lines_complex(bet_option)
+                point[0] = 420
     else:
         print('error')
         return
     return point
 
 
-def asian_lines_point_determining(bet_option, x_4_search, y_4_search):
+def asian_lines_complex(bet_option):
+    x_4_search, y_4_search, step = 166, [376, 686], 3
+    on_line, point = asian_lines_point_determining(bet_option, x_4_search, y_4_search, step)
+    if on_line:
+        pyautogui.hotkey('enter')
+        x_4_search, y_4_search, step = 190, [376, 686], 3
+        on_line, point = asian_lines_point_determining(bet_option, x_4_search, y_4_search, step)
+    else:
+        x_4_search, y_4_search, step = 190, [376, 686], 3
+        on_line, point = asian_lines_point_determining(bet_option, x_4_search, y_4_search, step)
+    return point
+
+
+def asian_lines_point_determining(bet_option, x_4_search, y_4_search, step):
     search_on_page(bet_option)
-    point = pixel_match_check_vertical(x_4_search, y_4_search)
+    point = pixel_match_check_vertical(x_4_search, y_4_search, step)
     if point:
         return True, point
     else:

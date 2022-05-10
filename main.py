@@ -133,6 +133,7 @@ def start_process(pq, locker, send_msg):
                 print('эксепшон', e)
                 pq.remove(task)
                 # pyautogui.hotkey(var.start_video_hotkey)
+                clear_search_window()
 
 def location_():  # определение коорд указателя для тестов
     time.sleep(7)

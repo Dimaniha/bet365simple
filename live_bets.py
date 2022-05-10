@@ -200,11 +200,12 @@ def live_football(task, send_msg):
             print(left, 'left')
             sign_to_write = football_sign_to_write_determining(bet_option_for_msg)
             search_on_page(sign_to_write)
-            x_4_search, y_4_search = [67, 634], 305
-            point = pixel_match_check_horizontal(x_4_search, y_4_search)
+            x_4_search, y_4_search, step = [67, 635], 300, 3
+            point = pixel_match_check_horizontal(x_4_search, y_4_search, step)
             pyautogui.click(x=point[0], y=point[1])
             time.sleep(1)
             point = football_bet_point_determining(sign_to_write, left, bet_option_for_msg)
             send_msg['msg'] = f'{var.bot_number}: успешно поставил на {bet_option_for_msg}'
+            is_point_clickable_check(point)
             pyautogui.click(x=point[0], y=point[1])
             make_bet(send_msg)
