@@ -187,6 +187,7 @@ def live_basketball(teams, bet_option, bet_team, url, bet_option_for_msg, send_m
 
 
 def live_football(task, send_msg):
+    placed_bets = []
     for line in task:
         if re.match(r'bet365.com', str(line)):
             url = line
@@ -196,16 +197,17 @@ def live_football(task, send_msg):
         if re.match(r'#A1|#A2|#A4|#A5', str(task[line])):
             print('some A')
             bet_option_for_msg = task[line+1]
-            if re.search(r'Home|over', str(bet_option_for_msg)):
-                x = 178
-                left = True
-            elif re.search(r'Away|under', str(bet_option_for_msg)):
-                x = 601
-                left = False
-            else:
-                bot.send_message(var.uid, f'{var.bot_number}: Обнаружена неведомая хрень - '
-                                          f'{bet_option_for_msg}')
+            if bet_option_for_msg in placed_bets:
                 continue
+            else:
+                if re.search(r'Home|over', str(bet_option_for_msg)):
+                    left = True
+                elif re.search(r'Away|under', str(bet_option_for_msg)):
+                    left = False
+                else:
+                    bot.send_message(var.uid, f'{var.bot_number}: Обнаружена неведомая хрень - '
+                                              f'{bet_option_for_msg}')
+                    continue
             print(left, 'left')
             sign_to_write = football_sign_to_write_determining(bet_option_for_msg)
             search_on_page(sign_to_write)
@@ -219,5 +221,7 @@ def live_football(task, send_msg):
             if clickable:
                 pyautogui.click(x=point[0], y=point[1])
                 make_bet(send_msg)
+                placed_bets.append(bet_option_for_msg)
             else:
-                return
+                continue
+    placed_bets.clear()

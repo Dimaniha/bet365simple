@@ -362,19 +362,21 @@ def football_bet_point_determining(sign_to_write, left, bet_option):
                 point[0] = 420
     else:
         print('error')
+        send_msg = f'{var.bot_number}: что-то пошло не так на футболе'
+        screenshot(send_msg)
         return
     return point
 
 
 def asian_lines_complex(bet_option):
-    x_4_search, y_4_search, step = 166, [376, 686], 3
+    x_4_search, y_4_search, step = 156, [376, 686], 3
     on_line, point = asian_lines_point_determining(bet_option, x_4_search, y_4_search, step)
     if on_line:
         pyautogui.hotkey('enter')
-        x_4_search, y_4_search, step = 190, [376, 686], 3
+        x_4_search, y_4_search, step = 200, [376, 686], 3
         on_line, point = asian_lines_point_determining(bet_option, x_4_search, y_4_search, step)
     else:
-        x_4_search, y_4_search, step = 190, [376, 686], 3
+        x_4_search, y_4_search, step = 200, [376, 686], 3
         on_line, point = asian_lines_point_determining(bet_option, x_4_search, y_4_search, step)
     return point
 
