@@ -6,6 +6,9 @@ import telebot
 from PIL import Image
 import masks
 import re
+import easyocr
+from classes import Search
+
 
 bot = telebot.TeleBot(var.API_TOKEN)
 
@@ -213,28 +216,6 @@ def search_on_page(sign_to_write):
     time.sleep(0.3)
 
 
-def pixel_match_check_horizontal(x, y, step):
-    for x_ in range(x[0], x[1], step):
-        pyautogui.moveTo(x_, y)
-        pixel = pyautogui.pixel(x_, y)
-        print(x_, y, pixel)
-        if pyautogui.pixelMatchesColor(x_, y, (56, 216, 120)):
-            point = [x_, y]
-            time.sleep(2)
-            return point
-
-
-def pixel_match_check_vertical(x, y, step):
-    for y_ in range(y[0], y[1], step):
-        pyautogui.moveTo(x, y_)
-        pixel = pyautogui.pixel(x, y_)
-        print(x, y_, pixel)
-        if pyautogui.pixelMatchesColor(x, y_, (56, 216, 120)):
-            point = [x, y_]
-            time.sleep(2)
-            return point
-
-
 def is_team1_match():
     if pyautogui.pixelMatchesColor(403, 236, (((56, 216, 120) or (255, 255, 255)))):
         position = True
@@ -285,7 +266,6 @@ def get_white_line_range(image_path):
                 white_line_range.append(y)
             elif RGB == (240, 240, 240) and photo.getpixel((x, y+1)) != (240, 240, 240):
                 white_line_range.append(y)
-                break
         else:  # без линии
             if RGB == (241, 241, 241) and photo.getpixel((x, y-1)) != (241, 241, 241):
                 white_line_range.append(y)
@@ -293,6 +273,27 @@ def get_white_line_range(image_path):
                 white_line_range.append(y)
     print(white_line_range)
     return white_line_range, width
+
+
+def text_recognition(screen_path):
+    reader = easyocr.Reader(['hu', 'en'])
+    result = reader.readtext(screen_path)
+    print(result, 'result')
+    return result
+
+
+def bet_type_determining(result):
+    for i in range(len(result)):
+        if re.search(r'(Ázsiai hendikep)|(asian handicap)|(Azsiai hendikep)', str(result[i])):
+            print('handicap')
+            sign_to_write = 'asian lines'
+        elif re.search(r'(Játekidö eredmenye)|(full time result)', str(result[i])):
+            print('pobeda fultime')
+            sign_to_write = 'all'
+        elif re.search(r'Goal Line', str(result[i])):
+            print('Goal Line')
+            sign_to_write = 'goals'
+    return sign_to_write
 
 
 def football_sign_to_write_determining(bet_option_for_msg):
@@ -322,7 +323,8 @@ def football_bet_point_determining(sign_to_write, left, bet_option):
         sign_to_write = 'fulltime result'
         search_on_page(sign_to_write)
         x, y, step = 110, [192, 685], 3
-        point = pixel_match_check_vertical(x, y, step)
+        vs = Search(x, y, step)
+        point = vs.pixel_match_check_vertical()
         if left:
             point = [163, point[1] + 60]
         else:
@@ -331,7 +333,8 @@ def football_bet_point_determining(sign_to_write, left, bet_option):
         sign_to_write = 'match goals'
         search_on_page(sign_to_write)
         x, y, step = 110, [192, 685], 3
-        point = pixel_match_check_vertical(x, y, step)
+        vs = Search(x, y, step)
+        point = vs.pixel_match_check_vertical()
         if left:
             point = [371, point[1] + 76]
         else:
@@ -383,8 +386,10 @@ def asian_lines_complex(bet_option):
 
 def asian_lines_point_determining(bet_option, x_4_search, y_4_search, step):
     search_on_page(bet_option)
-    point = pixel_match_check_vertical(x_4_search, y_4_search, step)
+    vs = Search(x_4_search, y_4_search, step)
+    point = vs.pixel_match_check_vertical()
     if point:
         return True, point
     else:
         return False, None
+# в 1 столбце от х = 165 до 180, 1 число х = 203

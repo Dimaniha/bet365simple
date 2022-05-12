@@ -138,18 +138,7 @@ def start_process(pq, locker, send_msg):
                 clear_search_window()
 
 
-def location_():  # определение коорд указателя для тестов
-    time.sleep(7)
-    # pyautogui.moveTo(612, 462)
-    n = pyautogui.position()
-    print(n)
-    pix = pyautogui.pixel(n[0], n[1])
-    print(pix)
-    time.sleep(40)
-
-
 if __name__ == '__main__':
-    #location_()
     start_time = datetime.datetime.now()
     manager = multiprocessing.Manager()
     send_msg = manager.dict()

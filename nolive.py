@@ -3,7 +3,11 @@ from nolive_bets import *
 
 def nolive(task, send_msg):
     for line in range(0, 3):
-        if line == 0:
+        if task[0] == 2:
+            nolive_bet_from_image(task[1])
+            print('zdesya')
+            return
+        elif line == 0:
             sport_type = task[1][line]
             if re.search(r'Draw', str(sport_type)):
                 print('draw')
@@ -22,3 +26,5 @@ def nolive(task, send_msg):
         nolive_ice_hockey(url, bet_option, sport_type)
     elif re.search(r'basketball', str(sport_type)):
         nolive_basketball(url, bet_option, sport_type)
+
+
