@@ -194,11 +194,11 @@ def live_football(task, send_msg):
         if re.match(r'bet365.com', str(line)):
             url = line
             break
-    #open_link(url)
     time.sleep(2)
     for line in range(len(task) - 1):
         if re.match(r'#A1|#A2|#A4|#A5', str(task[line])):
             try:
+                open_link(url)
                 print('some A')
                 bet_option_for_msg = [task[line + 1], task[line + 2]]
                 if bet_option_for_msg in placed_bets:
@@ -227,11 +227,11 @@ def live_football(task, send_msg):
                 search_on_page(sign_to_write)
                 x_4_search, y_4_search, step = [67, 635], 300, 3
                 hs = Search(x_4_search, y_4_search, step)
-                #point = hs.pixel_match_check_horizontal()
-                #pyautogui.click(x=point[0], y=point[1])
+                point = hs.pixel_match_check_horizontal()
+                pyautogui.click(x=point[0], y=point[1])
                 time.sleep(1)
                 point = football_bet_point_determining(sign_to_write, left, bet_option_for_msg, half, match_goals)
-                return
+                send_msg['msg'] = ''
                 send_msg['msg'] = f'{var.bot_number}: успешно поставил на {bet_option_for_msg[0]}'
                 clickable = is_point_clickable_check(point)
                 if clickable:
@@ -242,7 +242,7 @@ def live_football(task, send_msg):
                     continue
             except Exception as e:
                 print('osibka v futbole', e)
-                send_msg = f'{var.bot_number}: что-то пошло не так при попытке ставки'
+                send_msg['msg'] = ''
+                send_msg['msg'] = f'{var.bot_number}: что-то пошло не так при попытке ставки'
                 screenshot(send_msg)
                 continue
-# в 1 столбце от х = 165 до 180, 1 число х = 203

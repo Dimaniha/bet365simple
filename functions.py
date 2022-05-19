@@ -302,7 +302,6 @@ def get_white_line_range(image_path):
     return white_line_range, width
 
 
-
 def text_recognition(screen_path):
     img = Image.open(screen_path)
     enhancer1 = ImageEnhance.Sharpness(img)
@@ -393,33 +392,58 @@ def match_goals_check(bet_option_for_msg):
 
 
 def football_bet_point_determining(sign_to_write, left, bet_option, half, match_goals):
-    if sign_to_write == 'half':
-        sign_to_write = 'half time result'
-        search_on_page(sign_to_write)
-        x, y, step = 110, [192, 685], 3
-        vs = Search(x, y, step)
-        point = vs.pixel_match_check_vertical()
-        if left:
-            point = [178, point[1] + 60]
-        else:
-            point = [601, point[1] + 60]
-        print(sign_to_write)
-    elif sign_to_write == 'all':
-        sign_to_write = 'fulltime result'
-        search_on_page(sign_to_write)
-        x, y, step = 110, [192, 685], 3
-        vs = Search(x, y, step)
-        point = vs.pixel_match_check_vertical()
-        if left:
-            point = [163, point[1] + 60]
-        else:
-            point = [578, point[1] + 60]
-        print(sign_to_write)
-    elif sign_to_write == 'goals':
-        '''
-        for sign_to_write in football_title_types.football_title_types_list:
-            pass
-        
+    try:
+        if sign_to_write == 'half':
+            sign_to_write = 'half time result'
+            search_on_page(sign_to_write)
+            x, y, step = 110, [192, 685], 3
+            vs = Search(x, y, step)
+            point = vs.pixel_match_check_vertical()
+            if left:
+                point = [178, point[1] + 60]
+            else:
+                point = [601, point[1] + 60]
+            print(sign_to_write)
+        elif sign_to_write == 'all':
+            sign_to_write = 'fulltime result'
+            search_on_page(sign_to_write)
+            x, y, step = 110, [192, 685], 3
+            vs = Search(x, y, step)
+            point = vs.pixel_match_check_vertical()
+            if left:
+                point = [163, point[1] + 60]
+            else:
+                point = [578, point[1] + 60]
+            print(sign_to_write)
+        elif sign_to_write == 'goals':
+            '''
+            for sign_to_write in football_title_types.football_title_types_list:
+                pass
+            
+                search_on_page(sign_to_write)
+                x, y, step = [110, 120], [192, 685], 3
+                vs = Search(x[0], y, step)
+                point = vs.pixel_match_check_vertical()
+                if point:
+                    sign_to_write = bet_option[0][:-1].split('(')[1]
+                    search_on_page(sign_to_write)
+                    vs = Search(x[1], y, step)
+                    point = vs.pixel_match_check_vertical()
+                    if point:
+                        break
+                    else:
+                        continue
+                else:
+                    print('matcha ne naideno')
+            '''
+            if half:
+                sign_to_write = 'first half goals'
+            else:
+                if match_goals:
+                    sign_to_write = 'match goals'
+                else:
+                    sign_to_write = 'alternative match goals'
+            print(sign_to_write)
             search_on_page(sign_to_write)
             x, y, step = [110, 120], [192, 685], 3
             vs = Search(x[0], y, step)
@@ -429,106 +453,89 @@ def football_bet_point_determining(sign_to_write, left, bet_option, half, match_
                 search_on_page(sign_to_write)
                 vs = Search(x[1], y, step)
                 point = vs.pixel_match_check_vertical()
-                if point:
-                    break
-                else:
-                    continue
             else:
                 print('matcha ne naideno')
-        '''
-        if half:
-            sign_to_write = 'first half goals'
-        else:
-            if match_goals:
-                sign_to_write = 'match goals'
+            time.sleep(0.1)
+            ''' do suda '''
+            if left:
+                point = [248, point[1]]
             else:
-                sign_to_write = 'alternative match goals'
-        print(sign_to_write)
-        search_on_page(sign_to_write)
-        x, y, step = [110, 120], [192, 685], 3
-        vs = Search(x[0], y, step)
-        point = vs.pixel_match_check_vertical()
-        if point:
-            sign_to_write = bet_option[0][:-1].split('(')[1]
-            search_on_page(sign_to_write)
-            vs = Search(x[1], y, step)
-            point = vs.pixel_match_check_vertical()
-        else:
-            print('matcha ne naideno')
-        time.sleep(0.1)
-        ''' do suda '''
-        if left:
-            point = [248, point[1]]
-        else:
-            point = [594, point[1]]
-    elif sign_to_write == 'asian lines':
-        bet_option = bet_option[0][:-1].split('(')[1]
-        #154-166 - 1 столбец 153-165
-        #194-205 - 2 столбец 183-194
-        try:
-            if int(bet_option) == 0:
-                bet_option = bet_option + '.0'
-                zero = True
-            elif bet_option.isnumeric():
-                bet_option = '+' + bet_option
-        except Exception as e:
-            print(e)
-        print(bet_option)
-        return
-        if left:
-            point = asian_lines_complex(bet_option)
-        else:
+                point = [594, point[1]]
+        elif sign_to_write == 'asian lines':
+            bet_option = bet_option[0][:-1].split('(')[1]
             try:
-                if zero:
-                    point = asian_lines_complex(bet_option)
-                    point[0] = 420
+                if int(bet_option) == 0:
+                    bet_option = bet_option + '.0'
+                    zero = True
+                elif bet_option.isnumeric():
+                    bet_option = '+' + bet_option
             except Exception as e:
                 print(e)
-                if re.match(r'-', str(bet_option)):
-                    bet_option = re.sub(r'-', '+', str(bet_option))
-                elif re.match(r'\+', str(bet_option)):
-                    bet_option = re.sub(r'\+', '-', str(bet_option))
-                point = asian_lines_complex(bet_option)
-                point[0] = 420
-        print(sign_to_write)
-    else:
-        print('error')
-        send_msg = f'{var.bot_number}: что-то пошло не так на футболе'
-        screenshot(send_msg)
-        return
-    return point
+            print(bet_option)
+            if left:
+                try:
+                    point = asian_lines_complex(bet_option)
+                except Exception as e:
+                    print('v lifte', e)
+            else:
+                try:
+                    if zero:
+                        point = asian_lines_complex(bet_option)
+                        point[0] = 420
+                except Exception as e:
+                    print(e)
+                    if re.match(r'-', str(bet_option)):
+                        bet_option = re.sub(r'-', '+', str(bet_option))
+                    elif re.match(r'\+', str(bet_option)):
+                        bet_option = re.sub(r'\+', '-', str(bet_option))
+                    point = asian_lines_complex(bet_option)
+                    point[0] = 420
+        else:
+            print('error')
+            send_msg = f'{var.bot_number}: что-то пошло не так при попытке определения позиции кнопки'
+            screenshot(send_msg)
+            return
+        print('vozvrashayu point iz football_bet_point_determining')
+        return point
+
+    except Exception as e:
+        print('football_bet_point_determining', e)
 
 
 def asian_lines_complex(bet_option):
     try:
-        if int(bet_option) == 1 or -1:
-            one = True
-            print('one', one)
+        n = 0
+        x_4_search, y_4_search, step = [193, 200], [376, 686], 3
+        on_line1, point1 = asian_lines_point_determining(bet_option, x_4_search[0], y_4_search, step)
+        if on_line1:
+            return point1
+        on_line2, point2 = asian_lines_point_determining(bet_option, x_4_search[1], y_4_search, step)
+        while not on_line1 or on_line2 and n < 6:
+            pyautogui.hotkey('enter')
+            on_line1, point1 = asian_lines_point_determining(bet_option, x_4_search[0], y_4_search, step)
+            if on_line1:
+                break
+            on_line2, point2 = asian_lines_point_determining(bet_option, x_4_search[1], y_4_search, step)
+            n += 1
+        print('vozvrashayu point iz asian_lines_complex')
+        if point1:
+            return point1
+        elif point2:
+            return point2
     except Exception as e:
-        print(e)
-    x_4_search, y_4_search, step = 160, [376, 686], 3
-    on_line, point = asian_lines_point_determining(bet_option, x_4_search, y_4_search, step)
-    if on_line:
-        pyautogui.hotkey('enter')
-        x_4_search, y_4_search, step = 194, [376, 686], 3
-        on_line, point = asian_lines_point_determining(bet_option, x_4_search, y_4_search, step)
-    else:
-        try:
-            if one:
-                pyautogui.hotkey('enter')
-        except Exception as e:
-            print(e)
-        x_4_search, y_4_search, step = 194, [376, 686], 3
-        on_line, point = asian_lines_point_determining(bet_option, x_4_search, y_4_search, step)
-    return point
+        print('oshibkla v asian_lines_complex', e)
 
 
 def asian_lines_point_determining(bet_option, x_4_search, y_4_search, step):
-    search_on_page(bet_option)
-    vs = Search(x_4_search, y_4_search, step)
-    point = vs.pixel_match_check_vertical()
-    if point:
-        return True, point
-    else:
-        return False, None
-# в 1 столбце от х = 165 до 180, 1 число х = 203
+    try:
+        search_on_page(bet_option)
+        vs = Search(x_4_search, y_4_search, step)
+        point = vs.pixel_match_check_vertical()
+        if point:
+            print('vozvrashayu point iz asian_lines_point_determining')
+            return True, point
+        else:
+            print('vozvrashayu point iz asian_lines_point_determining')
+            return False, None
+    except Exception as e:
+        print('v asian_lines_point_determining', e)
