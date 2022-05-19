@@ -89,15 +89,16 @@ def nolive_bet_from_image(image_path):
     crop_a_particular_place(coordinates, image_path, masks.nolive_white_line)
     result = text_recognition(masks.nolive_white_line)
     url = 'https://www.bet365.com/#/IP/B1'
-    open_link(url)
-    sign_to_write = bet_type_determining(result)
-    search_on_page(sign_to_write)
+    #open_link(url)
+    sign_to_write, team = image_sign_to_write_determining(result)
+    return
+
+    search_on_page(team)
     x_4_search, y_4_search, step = 162, [376, 686], 3
     vs = Search(x_4_search, y_4_search, step)
     point = vs.pixel_match_check_vertical()
     pyautogui.click(x=point[0], y=point[1])
     time.sleep(2)
-    # сделать класс для поиска по несокльким местам сразу
     sign_to_write = bet_type_determining(result)
     search_on_page(sign_to_write)
     x_4_search, y_4_search, step = [67, 635], [331, 300], 3  # 2 lines
@@ -109,7 +110,6 @@ def nolive_bet_from_image(image_path):
         pyautogui.click(x=point1[0], y=point1[1])
     else:
         pyautogui.click(x=point2[0], y=point2[1])
-
 '''    
     search_on_page(sign_to_write)
     x_4_search, y_4_search, step = [67, 635], 300, 3

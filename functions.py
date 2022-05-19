@@ -3,12 +3,17 @@ import var
 import pyautogui
 import random
 import telebot
-from PIL import Image
+from PIL import Image, ImageEnhance
+import pytesseract
 import masks
 import re
 import easyocr
 from classes import Search
+import football_title_types
+import tips_4_screenshots_bets
 
+
+pytesseract.pytesseract.tesseract_cmd = r'F:\tesseract\tesseract.exe'
 
 bot = telebot.TeleBot(var.API_TOKEN)
 
@@ -247,20 +252,41 @@ def get_white_line_range(image_path):
     x = width - 1
     white_line_range = []
     white_line_possible_range = set()
+    '''
     for y in reversed(range(height)):
         RGB = photo.getpixel((x, y))
         white_line_possible_range.add(RGB)
+        print(x, y, RGB, 'check')
         if y == height - 100:
             break
+    
     if (240, 240, 240) in white_line_possible_range:  # с линией
         with_line = True
         print('vse matchi')
     else:
         with_line = False
         print('stavka')
+    '''
     for y in range(height-400, height):
         RGB = photo.getpixel((x, y))
-        #print(x, y, RGB)
+        print(x, y, RGB)
+        if RGB == (240, 240, 240):
+            white_line_range.append(y)
+            break
+        elif RGB == (241, 241, 241):
+            white_line_range.append(y)
+            break
+
+    for y in reversed(range(height)):
+        RGB = photo.getpixel((x, y))
+        print(x, y, RGB)
+        if RGB == (240, 240, 240):
+            white_line_range.append(y)
+            break
+        elif RGB == (241, 241, 241):
+            white_line_range.append(y)
+            break
+        '''
         if with_line:  # с линией
             if RGB == (240, 240, 240) and photo.getpixel((x, y-1)) != (240, 240, 240):
                 white_line_range.append(y)
@@ -271,38 +297,68 @@ def get_white_line_range(image_path):
                 white_line_range.append(y)
             elif RGB == (241, 241, 241) and photo.getpixel((x, y+1)) != (241, 241, 241):
                 white_line_range.append(y)
+        '''
     print(white_line_range)
     return white_line_range, width
 
 
+
+def text_recognition(screen_path):
+    img = Image.open(screen_path)
+    enhancer1 = ImageEnhance.Sharpness(img)
+    enhancer2 = ImageEnhance.Contrast(img)
+    img_edit = enhancer1.enhance(20.0)
+    img_edit = enhancer2.enhance(1.5)
+    img_edit.save("edited_image.png")
+    result = pytesseract.image_to_string(img_edit)
+    print(result.split('\n'))
+    return result.split('\n')
+
+
+'''
 def text_recognition(screen_path):
     reader = easyocr.Reader(['hu', 'en'])
     result = reader.readtext(screen_path)
     print(result, 'result')
     return result
+'''
 
-
-def bet_type_determining(result):
+def image_sign_to_write_determining(result):
     for i in range(len(result)):
-        if re.search(r'(Ázsiai hendikep)|(asian handicap)|(azsiai hendikep)|(Azsiai hendikep)', str(result[i])):
-            print('handicap')
-            sign_to_write = 'asian lines'
-        elif re.search(r'(Játekidö eredmenye)|(full time result)', str(result[i])):
-            print('pobeda fultime')
-            sign_to_write = 'all'
-        elif re.search(r'Goal Line', str(result[i])):
-            print('Goal Line')
-            sign_to_write = 'goals'
+        for x in tips_4_screenshots_bets.asian_lines_tips:
+            if re.search(rf'{x}', str(result[i])):
+                print('handicap')
+                sign_to_write = 'asian lines'
+                break
+        for x in tips_4_screenshots_bets.full_time_result_tips:
+            if re.search(rf'{x}', str(result[i])):
+                print('pobeda fultime')
+                sign_to_write = 'all'
+                break
+        for x in tips_4_screenshots_bets.goal_line_tips:
+            if re.search(rf'{x}', str(result[i])):
+                print('Goal Line')
+                sign_to_write = 'goals'
+                break
         try:
             if sign_to_write:
-                team = result[i-1][1]
+                print(result[i], 'reaaassa')
+                team = result[i-1]
                 print('team nashel', team)
                 return sign_to_write, team
         except Exception as e:
             print('bet_type ', e)
             continue
 
+'''
+def image_bet_type_determining(sign_to_write, team):
+    if sign_to_write == 'all':
+        if re.search(r''):
+    elif sign_to_write = 'asian lines':
 
+    elif sign_to_write = 'goals':
+        if re.search(r'Felett')
+'''
 def football_sign_to_write_determining(bet_option_for_msg, main_line):
     if re.search(r'win', str(bet_option_for_msg)):  #A1
         if re.search(r'win ht', str(bet_option_for_msg)):
@@ -328,12 +384,26 @@ def football_half_check(bet_option_for_msg):
     return half
 
 
-def football_bet_point_determining(sign_to_write, left, bet_option, half):
+def match_goals_check(bet_option_for_msg):
+    if re.search(r'Over|Under', str(bet_option_for_msg)):
+        match_goals = True
+    else:
+        match_goals = False
+    return match_goals
+
+
+def football_bet_point_determining(sign_to_write, left, bet_option, half, match_goals):
     if sign_to_write == 'half':
+        sign_to_write = 'half time result'
+        search_on_page(sign_to_write)
+        x, y, step = 110, [192, 685], 3
+        vs = Search(x, y, step)
+        point = vs.pixel_match_check_vertical()
         if left:
-            point = [178, 416]
+            point = [178, point[1] + 60]
         else:
-            point = [601, 416]
+            point = [601, point[1] + 60]
+        print(sign_to_write)
     elif sign_to_write == 'all':
         sign_to_write = 'fulltime result'
         search_on_page(sign_to_write)
@@ -344,11 +414,36 @@ def football_bet_point_determining(sign_to_write, left, bet_option, half):
             point = [163, point[1] + 60]
         else:
             point = [578, point[1] + 60]
+        print(sign_to_write)
     elif sign_to_write == 'goals':
+        '''
+        for sign_to_write in football_title_types.football_title_types_list:
+            pass
+        
+            search_on_page(sign_to_write)
+            x, y, step = [110, 120], [192, 685], 3
+            vs = Search(x[0], y, step)
+            point = vs.pixel_match_check_vertical()
+            if point:
+                sign_to_write = bet_option[0][:-1].split('(')[1]
+                search_on_page(sign_to_write)
+                vs = Search(x[1], y, step)
+                point = vs.pixel_match_check_vertical()
+                if point:
+                    break
+                else:
+                    continue
+            else:
+                print('matcha ne naideno')
+        '''
         if half:
-            sign_to_write = 'alternative match goals'
-        else:
             sign_to_write = 'first half goals'
+        else:
+            if match_goals:
+                sign_to_write = 'match goals'
+            else:
+                sign_to_write = 'alternative match goals'
+        print(sign_to_write)
         search_on_page(sign_to_write)
         x, y, step = [110, 120], [192, 685], 3
         vs = Search(x[0], y, step)
@@ -361,19 +456,25 @@ def football_bet_point_determining(sign_to_write, left, bet_option, half):
         else:
             print('matcha ne naideno')
         time.sleep(0.1)
+        ''' do suda '''
         if left:
             point = [248, point[1]]
         else:
             point = [594, point[1]]
     elif sign_to_write == 'asian lines':
         bet_option = bet_option[0][:-1].split('(')[1]
+        #154-166 - 1 столбец 153-165
+        #194-205 - 2 столбец 183-194
         try:
             if int(bet_option) == 0:
                 bet_option = bet_option + '.0'
                 zero = True
+            elif bet_option.isnumeric():
+                bet_option = '+' + bet_option
         except Exception as e:
             print(e)
         print(bet_option)
+        return
         if left:
             point = asian_lines_complex(bet_option)
         else:
@@ -389,6 +490,7 @@ def football_bet_point_determining(sign_to_write, left, bet_option, half):
                     bet_option = re.sub(r'\+', '-', str(bet_option))
                 point = asian_lines_complex(bet_option)
                 point[0] = 420
+        print(sign_to_write)
     else:
         print('error')
         send_msg = f'{var.bot_number}: что-то пошло не так на футболе'
@@ -398,14 +500,25 @@ def football_bet_point_determining(sign_to_write, left, bet_option, half):
 
 
 def asian_lines_complex(bet_option):
-    x_4_search, y_4_search, step = 156, [376, 686], 3
+    try:
+        if int(bet_option) == 1 or -1:
+            one = True
+            print('one', one)
+    except Exception as e:
+        print(e)
+    x_4_search, y_4_search, step = 160, [376, 686], 3
     on_line, point = asian_lines_point_determining(bet_option, x_4_search, y_4_search, step)
     if on_line:
         pyautogui.hotkey('enter')
-        x_4_search, y_4_search, step = 200, [376, 686], 3
+        x_4_search, y_4_search, step = 194, [376, 686], 3
         on_line, point = asian_lines_point_determining(bet_option, x_4_search, y_4_search, step)
     else:
-        x_4_search, y_4_search, step = 200, [376, 686], 3
+        try:
+            if one:
+                pyautogui.hotkey('enter')
+        except Exception as e:
+            print(e)
+        x_4_search, y_4_search, step = 194, [376, 686], 3
         on_line, point = asian_lines_point_determining(bet_option, x_4_search, y_4_search, step)
     return point
 

@@ -1,0 +1,1 @@
+football_title_types_list = []
