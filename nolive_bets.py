@@ -86,6 +86,7 @@ def nolive_basketball(url, bet_option, sport_type):
 
 
 def nolive_bet_from_image(task, send_msg, locker, pq):
+    pyautogui.hotkey(var.start_video_hotkey)
     image_path = task[1]
     white_line_range, width = get_white_line_range(image_path)
     last_y_position = len(white_line_range) - 1
@@ -137,7 +138,7 @@ def nolive_bet_from_image(task, send_msg, locker, pq):
         if team1:
             break
         elif n == 10 and not team1:
-            send_msg['msg'] = f'{var.bot_number}: совпадений не найдено'
+            send_msg['msg'] = f'{var.bot_number}: после 10 попыток совпадений не найдено'
             screenshot(send_msg['msg'])
             return
         else:
@@ -165,5 +166,6 @@ def nolive_bet_from_image(task, send_msg, locker, pq):
     if clickable:
         pyautogui.click(x=point[0], y=point[1])
         make_bet(send_msg)
-    else:
-        pq.remove(task)
+    pq.remove(task)
+    locker['processing'] = False
+    pyautogui.hotkey(var.start_video_hotkey)

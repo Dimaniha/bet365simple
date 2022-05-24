@@ -79,7 +79,7 @@ def start(pq, locker, send_msg):
             print(path)
             with open(path, 'wb') as new_file:
                 new_file.write(downloaded_file)
-            p.add_new(path, pq, priority=1)
+            p.add_new(path, pq, priority=2)
 
     @bot.channel_post_handler(func=lambda message: True, content_types=['text'])
     @bot.message_handler(func=lambda message: True, content_types=['text'])
@@ -113,39 +113,45 @@ def start(pq, locker, send_msg):
         print("error while polling", e)
 
 
-
 def start_process(pq, locker, send_msg):
     while True:
-        if len(pq) > 0 and locker['locked'] is False and locker['page_waiting'] is False:
-            print(pq)
-            print(len(pq))
-            try:
-                pyautogui.hotkey(var.start_video_hotkey)
-                remain_window_check()
-                task = pq[0]
-                if re.search(r'#/IP/EV', str(task)):
-                    print("nashel live")
-                    live(task, send_msg)
+        if len(pq) > 0:
+            remain_window_check()
+            task = pq[0]
+            if locker['locked'] is False and locker['page_waiting'] is False and locker['processing'] is False:
+                print(pq)
+                print(len(pq))
+                try:
+                    pyautogui.hotkey(var.start_video_hotkey)
+                    if re.search(r'#/IP/EV', str(task)):
+                        print("nashel live")
+                        live(task, send_msg)
+                    elif task[0] == 1:
+                        print("nashel nolive")
+                        nolive(task, send_msg, locker)
                     pq.remove(task)
-                elif task[0] == 1:
-                    bet_from_image_proc = Process(target=nolive_bet_from_image, args=(task, send_msg, locker, pq))
-                    bet_from_image_proc.start()
-                else:
-                    print("nashel nolive")
-                    nolive(task, send_msg, locker)
+                    if len(pq) == 0:
+                        pyautogui.click(x=418, y=155)
+                    clear_search_window()
+                    pyautogui.hotkey(var.start_video_hotkey)
+                except Exception as e:
+                    print('эксепшон', e)
                     pq.remove(task)
-                if len(pq) == 0:
-                    pyautogui.click(x=418, y=155)
-                pyautogui.hotkey(var.start_video_hotkey)
-            except Exception as e:
-                print('эксепшон', e)
-                pq.remove(task)
-                pyautogui.hotkey(var.start_video_hotkey)
-                clear_search_window()
+                    clear_search_window()
+                    if len(pq) == 0:
+                        pyautogui.click(x=418, y=155)
+                    pyautogui.hotkey(var.start_video_hotkey)
+            elif locker['locked'] is False and locker['page_waiting'] is False and locker['processing'] is False\
+                    and task[0] == 2:
+                print("nashel stavku s kartinki")
+                bet_from_image_proc = Process(target=nolive_bet_from_image, args=(task, send_msg, locker, pq))
+                bet_from_image_proc.start()
+                locker['processing'] = True
         elif locker['page_waiting'] is True and len(pq) > 1 and pq[0][0] == 0:
             print('bolshe 1')
             bet_from_image_proc.terminate()
             locker['page_waiting'] = False
+            locker['processing'] = False
 
 
 if __name__ == '__main__':
@@ -156,6 +162,7 @@ if __name__ == '__main__':
     locker = manager.dict()
     locker['locked'] = False
     locker['page_waiting'] = False
+    locker['processing'] = False
     pq = manager.list()
     start_proc = Process(target=start, args=(pq, locker, send_msg))
     work_proc = Process(target=start_process, args=(pq, locker, send_msg))
