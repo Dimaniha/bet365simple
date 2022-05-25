@@ -252,16 +252,19 @@ def get_white_line_range(image_path):
     white_line_range = []
     for y in range(height-400, height):
         RGB = photo.getpixel((x, y))
-        print(x, y, RGB)
+        #print(x, y, RGB)
         if RGB == (240, 240, 240):
             white_line_range.append(y)
             break
         elif RGB == (241, 241, 241):
             white_line_range.append(y)
             break
+        elif RGB == (235, 235, 235):
+            white_line_range.append(y)
+            break
     for y in reversed(range(height)):
         RGB = photo.getpixel((x, y))
-        print(x, y, RGB)
+        #print(x, y, RGB)
         if RGB == (240, 240, 240):
             white_line_range.append(y)
             break
@@ -284,30 +287,56 @@ def text_recognition(screen_path):
     return result.split('\n')
 
 
+def spaces_delete(result):
+    result_sorted = []
+    for i in result:
+        if i == '':
+            continue
+        else:
+            result_sorted.append(i)
+    return result_sorted
+
+
 def image_sign_to_write_determining(result):
     bet_type = result[0]
     for x in tips_4_screenshots_bets.asian_lines_tips:
         if re.search(rf'{x}', str(result[1])):
             print('handicap')
-            bet_type = bet_type.split('(')[1].split(')')[0]
+            bet_string = bet_type.split('(')
+            if re.search(r'\(', str(bet_string[1])):
+                bet_type = bet_string[1].split('(')[1].split(')')[0].lower()
+            else:
+                bet_type = bet_type.split('(')[1].split(')')[0].lower()
+            bet_type = team_tips_check(bet_type)
             sign_to_write = 'asian lines'
             break
     for x in tips_4_screenshots_bets.full_time_result_tips:
         if re.search(rf'{x}', str(result[1])):
             print('pobeda fultime')
-            bet_type = bet_type.split('(')[1].split(')')[0]
+            if re.search(r'draw|Draw', str(bet_type)):
+                bet_type = 'draw'
+            else:
+                bet_type = bet_type.split('(')[1].split(')')[0].lower()
+                bet_type = team_tips_check(bet_type)
             sign_to_write = 'all'
             break
     for x in tips_4_screenshots_bets.goal_line_tips:
         if re.search(rf'{x}', str(result[1])):
             print('Goal Line')
-            if re.search(r'felett', str(bet_type.lower())):
+            if re.search(r'felett|over', str(bet_type.lower())):
                 bet_type = 'over'
-            elif re.search(r'alatt', str(bet_type.lower())):
+            elif re.search(r'alatt|under', str(bet_type.lower())):
                 bet_type = 'under'
             sign_to_write = 'goals'
             break
     return sign_to_write, bet_type
+
+
+def team_tips_check(team1):
+    for team in tips_4_screenshots_bets.nicknames:
+        if team1 == team:
+            team1 = tips_4_screenshots_bets.nicknames[team]
+    return team1
 
 
 def match_page_clickable_check(locker, n):
@@ -344,6 +373,8 @@ def image_point_to_click_determining(sign_to_write, bet_type, y, teams):
         x_goals = [802, 477]
     elif bet_type == 'over': # left
         x_goals = [492, 247]
+    elif bet_type == 'draw':
+        x_all = [640, 377]
     else:
         for word in range(len(teams)):
             if re.search(rf'{bet_type}', str(teams[word])):

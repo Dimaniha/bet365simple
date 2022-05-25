@@ -1,5 +1,5 @@
 import time
-
+import sys
 import tips_4_screenshots_bets
 from functions import *
 
@@ -86,86 +86,99 @@ def nolive_basketball(url, bet_option, sport_type):
 
 
 def nolive_bet_from_image(task, send_msg, locker, pq):
-    pyautogui.hotkey(var.start_video_hotkey)
-    image_path = task[1]
-    white_line_range, width = get_white_line_range(image_path)
-    last_y_position = len(white_line_range) - 1
-    coordinates = [0, white_line_range[0], width, white_line_range[last_y_position]]
-    crop_a_particular_place(coordinates, image_path, masks.nolive_white_line)
-    result = text_recognition(masks.nolive_white_line)
-    url = 'https://www.bet365.com/#/AC/B1/C1/D1002/E72260052/G938/'
-    #8 min = 'https://www.bet365.com/#/AC/B1/C1/D1002/E47578773/G938/'
-    #10min = 'https://www.bet365.com/#/AC/B1/C1/D1002/E72260052/G938/'
-    #12min = 'https://www.bet365.com/#/AC/B1/C1/D1002/E71755872/G938/'
-    teams = [result[2][:len(result[2]) // 2], result[2][len(result[2]) // 2:]]
-    team1 = teams[0].split('(')[1].split(')')[0].lower()
-    team2 = teams[1].split('(')[1].split(')')[0].lower()
-    print(team1, team2)
-    for team in tips_4_screenshots_bets.nicknames:
-        if team1 == team.lower():
-            team1 = tips_4_screenshots_bets.nicknames[team]
-        elif team2 == team.lower():
-            team2 = tips_4_screenshots_bets.nicknames[team]
-    print(team1, team2)
-    click = False
-    n = 0
-    while not click:
-        open_link(url)
-        sign_to_write = f'({team2}) esports'
-        search_on_page(sign_to_write)
-        if n != 0:
-            pyautogui.press('enter', presses=n)
-        x, y, step = 350, [192, 685], 3
-        for x_ in range(340, 470, 20):
-            vs = Search(x_, y, step)
-            point = vs.pixel_match_check_vertical()
-            if point:
-                pyautogui.click(x=point[0], y=point[1])
+    try:
+        pyautogui.hotkey(var.start_video_hotkey)
+        image_path = task[1]
+        white_line_range, width = get_white_line_range(image_path)
+        last_y_position = len(white_line_range) - 1
+        coordinates = [0, white_line_range[0], width, white_line_range[last_y_position]]
+        crop_a_particular_place(coordinates, image_path, masks.nolive_white_line)
+        result = text_recognition(masks.nolive_white_line)
+        result = spaces_delete(result)
+        url = 'https://www.bet365.com/#/AC/B1/C1/D1002/E72260052/G938/'
+        #8 min = 'https://www.bet365.com/#/AC/B1/C1/D1002/E47578773/G938/'
+        #10min = 'https://www.bet365.com/#/AC/B1/C1/D1002/E72260052/G938/'
+        #12min = 'https://www.bet365.com/#/AC/B1/C1/D1002/E71755872/G938/'
+        teams = [result[2][:len(result[2]) // 2], result[2][len(result[2]) // 2:]]
+        team1 = teams[0].split('(')[1].split(')')[0].lower()
+        team2 = teams[1].split('(')[1].split(')')[0].lower()
+        print(team1, team2)
+        for team in tips_4_screenshots_bets.nicknames:
+            if team1 == team:
+                team1 = tips_4_screenshots_bets.nicknames[team]
+            elif team2 == team:
+                team2 = tips_4_screenshots_bets.nicknames[team]
+        print(team1, team2)
+        click = False
+        n = 0
+        while not click:
+            open_link(url)
+            sign_to_write = f'({team2}) esports'
+            search_on_page(sign_to_write)
+            if n != 0:
+                pyautogui.press('enter', presses=n)
+            x, y, step = 350, [192, 685], 3
+            for x_ in range(340, 470, 20):
+                vs = Search(x_, y, step)
+                point = vs.pixel_match_check_vertical()
+                if point:
+                    pyautogui.click(x=point[0], y=point[1])
+                    break
+            time.sleep(2)
+            click, n = match_page_clickable_check(locker, n)
+            if not click:
+                pyautogui.hotkey('f5')
+                continue
+            sign_to_write = f'({team1}) esports'
+            pyautogui.hotkey('ctrl', 'f')
+            pyautogui.hotkey('backspace')
+            search_on_page(sign_to_write)
+            x, y, step = [110, 590], 236, 10
+            hs = Search(x, y, step)
+            team1 = hs.pixel_match_check_horizontal()
+            print('position', team1)
+            if team1:
                 break
-        time.sleep(2)
-        click, n = match_page_clickable_check(locker, n)
-        if not click:
-            pyautogui.hotkey('f5')
-            continue
-        sign_to_write = f'({team1}) esports'
-        pyautogui.hotkey('ctrl', 'f')
-        pyautogui.hotkey('backspace')
-        search_on_page(sign_to_write)
-        x, y, step = [110, 590], 236, 10
-        hs = Search(x, y, step)
-        team1 = hs.pixel_match_check_horizontal()
-        print('position', team1)
-        if team1:
-            break
-        elif n == 10 and not team1:
-            send_msg['msg'] = f'{var.bot_number}: после 10 попыток совпадений не найдено'
-            screenshot(send_msg['msg'])
-            return
+            elif n == 10 and not team1:
+                send_msg['msg'] = f'{var.bot_number}: после 10 попыток совпадений не найдено'
+                screenshot(send_msg['msg'])
+                locker['processing'] = False
+                return
+            else:
+                n += 1
+                continue
+        sign_to_write, bet_type = image_sign_to_write_determining(result)
+        if sign_to_write == 'all':
+            sign_to_write = ['popular', 'all']
+            for i in sign_to_write:
+                point = tab_check(i)
+                if point:
+                    break
         else:
-            n += 1
-            continue
-    sign_to_write, bet_type = image_sign_to_write_determining(result)
-    if sign_to_write == 'all':
-        sign_to_write = ['popular', 'all']
-        for i in sign_to_write:
-            point = tab_check(i)
-            if point:
-                break
-    else:
-        point = tab_check(sign_to_write)
-    print('point')
-    if not point:
-        send_msg['msg'] = f'{var.bot_number}: не нашел нужную вкладку'
-        screenshot(send_msg['msg'])
+            point = tab_check(sign_to_write)
+        print('point')
+        if not point:
+            send_msg['msg'] = f'{var.bot_number}: не нашел нужную вкладку'
+            screenshot(send_msg['msg'])
+            locker['processing'] = False
+            return
+        pyautogui.click(x=point[0], y=point[1])  # открыл нужную вкладку на странице
+        time.sleep(1)
+        point = image_point_to_click_determining(sign_to_write, bet_type, point[1], teams)
+        send_msg['msg'] = f'{var.bot_number}: успешно поставил на {result[0]}'
+        clickable = is_point_clickable_check(point)
+        if clickable:
+            pyautogui.click(x=point[0], y=point[1])
+            make_bet(send_msg)
+        pq.remove(task)
+        locker['processing'] = False
+        clear_search_window()
+        pyautogui.hotkey(var.start_video_hotkey)
         return
-    pyautogui.click(x=point[0], y=point[1])  # открыл нужную вкладку на странице
-    time.sleep(1)
-    point = image_point_to_click_determining(sign_to_write, bet_type, point[1], teams)
-    send_msg['msg'] = f'{var.bot_number}: успешно поставил на {result[0]}'
-    clickable = is_point_clickable_check(point)
-    if clickable:
-        pyautogui.click(x=point[0], y=point[1])
-        make_bet(send_msg)
-    pq.remove(task)
-    locker['processing'] = False
-    pyautogui.hotkey(var.start_video_hotkey)
+    except Exception as e:
+        print('error in picture', e)
+        pq.remove(task)
+        locker['processing'] = False
+        clear_search_window()
+        pyautogui.hotkey(var.start_video_hotkey)
+        return

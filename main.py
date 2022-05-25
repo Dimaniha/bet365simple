@@ -117,11 +117,12 @@ def start_process(pq, locker, send_msg):
     while True:
         if len(pq) > 0:
             remain_window_check()
-            task = pq[0]
-            if locker['locked'] is False and locker['page_waiting'] is False and locker['processing'] is False:
+            if locker['locked'] is False and locker['page_waiting'] is False and locker['processing'] is False\
+                    and pq[0][0] != 2:
                 print(pq)
                 print(len(pq))
                 try:
+                    task = pq[0]
                     pyautogui.hotkey(var.start_video_hotkey)
                     if re.search(r'#/IP/EV', str(task)):
                         print("nashel live")
@@ -142,8 +143,9 @@ def start_process(pq, locker, send_msg):
                         pyautogui.click(x=418, y=155)
                     pyautogui.hotkey(var.start_video_hotkey)
             elif locker['locked'] is False and locker['page_waiting'] is False and locker['processing'] is False\
-                    and task[0] == 2:
+                    and pq[0][0] == 2:
                 print("nashel stavku s kartinki")
+                task = pq[0]
                 bet_from_image_proc = Process(target=nolive_bet_from_image, args=(task, send_msg, locker, pq))
                 bet_from_image_proc.start()
                 locker['processing'] = True
