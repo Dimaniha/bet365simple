@@ -123,11 +123,13 @@ def nolive_bet_from_image(task, send_msg, locker, pq):
                 point = vs.pixel_match_check_vertical()
                 if point:
                     pyautogui.click(x=point[0], y=point[1])
+                    time.sleep(3)
                     break
             time.sleep(2)
             click, n = match_page_clickable_check(locker, n)
             if not click:
                 pyautogui.hotkey('f5')
+                time.sleep(3)
                 continue
             sign_to_write = f'({team1}) esports'
             pyautogui.hotkey('ctrl', 'f')
