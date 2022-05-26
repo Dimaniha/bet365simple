@@ -1,6 +1,3 @@
-import time
-import sys
-import tips_4_screenshots_bets
 from functions import *
 
 

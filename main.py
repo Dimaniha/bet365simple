@@ -1,6 +1,4 @@
-﻿import time
-
-from live import *
+﻿from live import *
 from nolive import *
 from classes import PriorityQueue
 from multiprocessing import Process

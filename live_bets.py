@@ -1,6 +1,4 @@
 ﻿import datetime
-import time
-
 from functions import *
 import abandoned_boys
 
@@ -199,6 +197,7 @@ def live_football(task, send_msg):
         if re.match(r'#A1|#A2|#A4|#A5', str(task[line])):
             try:
                 open_link(url)
+                time.sleep(4)
                 print('some A')
                 bet_option_for_msg = [task[line + 1], task[line + 2]]
                 if bet_option_for_msg in placed_bets:
