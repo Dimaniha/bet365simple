@@ -1,4 +1,6 @@
-﻿from live import *
+﻿import time
+
+from live import *
 from nolive import *
 from classes import PriorityQueue
 from multiprocessing import Process
@@ -112,46 +114,42 @@ def start(pq, locker, send_msg):
 
 
 def start_process(pq, locker, send_msg):
-    while True:
-        if len(pq) > 0:
-            remain_window_check()
-            if locker['locked'] is False and locker['page_waiting'] is False and locker['processing'] is False\
-                    and pq[0][0] != 2:
-                print(pq)
-                print(len(pq))
-                try:
-                    task = pq[0]
-                    pyautogui.hotkey(var.start_video_hotkey)
-                    if re.search(r'#/IP/EV', str(task)):
-                        print("nashel live")
-                        live(task, send_msg)
-                    elif task[0] == 1:
-                        print("nashel nolive")
-                        nolive(task, send_msg, locker)
-                    pq.remove(task)
-                    if len(pq) == 0:
-                        pyautogui.click(x=418, y=155)
-                    clear_search_window()
-                    pyautogui.hotkey(var.start_video_hotkey)
-                except Exception as e:
-                    print('эксепшон', e)
-                    pq.remove(task)
-                    clear_search_window()
-                    if len(pq) == 0:
-                        pyautogui.click(x=418, y=155)
-                    pyautogui.hotkey(var.start_video_hotkey)
-            elif locker['locked'] is False and locker['page_waiting'] is False and locker['processing'] is False\
-                    and pq[0][0] == 2:
-                print("nashel stavku s kartinki")
-                task = pq[0]
-                bet_from_image_proc = Process(target=nolive_bet_from_image, args=(task, send_msg, locker, pq))
-                bet_from_image_proc.start()
-                locker['processing'] = True
-        elif locker['page_waiting'] is True and len(pq) > 1 and pq[0][0] == 0:
-            print('bolshe 1')
-            bet_from_image_proc.terminate()
-            locker['page_waiting'] = False
-            locker['processing'] = False
+    remain_window_check()
+    if locker['locked'] is False and locker['page_waiting'] is False and locker['processing'] is False \
+            and pq[0][0] != 2:
+        print(pq)
+        print(len(pq))
+        try:
+            task = pq[0]
+            pyautogui.hotkey(var.start_video_hotkey)
+            if re.search(r'#/IP/EV', str(task)):
+                print("nashel live")
+                live(task, send_msg)
+            elif task[0] == 1:
+                print("nashel nolive")
+                nolive(task, send_msg, locker)
+            pq.remove(task)
+            if len(pq) == 0:
+                pyautogui.click(x=418, y=155)
+                clear_search_window()
+            pyautogui.hotkey(var.start_video_hotkey)
+        except Exception as e:
+            print('эксепшон', e)
+            pq.remove(task)
+            clear_search_window()
+            if len(pq) == 0:
+                pyautogui.click(x=418, y=155)
+            pyautogui.hotkey(var.start_video_hotkey)
+    elif locker['locked'] is False and locker['page_waiting'] is False and locker['processing'] is False \
+            and pq[0][0] == 2:
+        print("nashel stavku s kartinki")
+        task = pq[0]
+        bet_from_image_proc = Process(target=nolive_bet_from_image, args=(task, send_msg, locker, pq))
+        bet_from_image_proc.start()
+        locker['processing'] = True
+
+    locker['started'] = False
+    print('vishel')
 
 
 if __name__ == '__main__':
@@ -163,11 +161,10 @@ if __name__ == '__main__':
     locker['locked'] = False
     locker['page_waiting'] = False
     locker['processing'] = False
+    locker['started'] = False
     pq = manager.list()
     start_proc = Process(target=start, args=(pq, locker, send_msg))
-    work_proc = Process(target=start_process, args=(pq, locker, send_msg))
     start_proc.start()
-    work_proc.start()
     while True:
         if (datetime.datetime.now() - start_time).total_seconds() // 1800.0 >= 1 and len(pq) == 0:
             locker['locked'] = True
@@ -179,3 +176,14 @@ if __name__ == '__main__':
             start_proc.terminate()
             start_proc = Process(target=start, args=(pq, locker, send_msg))
             start_proc.start()
+        elif len(pq) > 0 and locker['started'] is False:
+            print('started')
+            work_proc = Process(target=start_process, args=(pq, locker, send_msg))
+            work_proc.start()
+            locker['started'] = True
+        elif locker['page_waiting'] is True and len(pq) > 1 and pq[0][0] == 0:
+            print('bolshe 1')
+            bet_from_image_proc.terminate()
+            locker['page_waiting'] = False
+            locker['processing'] = False
+            locker['started'] = False

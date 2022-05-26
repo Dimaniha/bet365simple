@@ -1,3 +1,5 @@
+import pyautogui
+
 from functions import *
 
 
@@ -92,7 +94,8 @@ def nolive_bet_from_image(task, send_msg, locker, pq):
         crop_a_particular_place(coordinates, image_path, masks.nolive_white_line)
         result = text_recognition(masks.nolive_white_line)
         result = spaces_delete(result)
-        url = 'https://www.bet365.com/#/AC/B1/C1/D1002/E72260052/G938/'
+        urls = ['https://www.bet365.com/#/AC/B1/C1/D1002/E47578773/G938/', 'https://www.bet365.com/#/AC/B1/C1/D1002/E72260052/G938/'
+                ]
         #8 min = 'https://www.bet365.com/#/AC/B1/C1/D1002/E47578773/G938/'
         #10min = 'https://www.bet365.com/#/AC/B1/C1/D1002/E72260052/G938/'
         #12min = 'https://www.bet365.com/#/AC/B1/C1/D1002/E71755872/G938/'
@@ -106,46 +109,57 @@ def nolive_bet_from_image(task, send_msg, locker, pq):
             elif team2 == team:
                 team2 = tips_4_screenshots_bets.nicknames[team]
         print(team1, team2)
-        click = False
-        n = 0
-        while not click:
-            open_link(url)
-            sign_to_write = f'({team2}) esports'
-            search_on_page(sign_to_write)
-            if n != 0:
-                pyautogui.press('enter', presses=n)
-            x, y, step = 350, [192, 685], 3
-            for x_ in range(340, 470, 20):
-                vs = Search(x_, y, step)
-                point = vs.pixel_match_check_vertical()
-                if point:
-                    pyautogui.click(x=point[0], y=point[1])
-                    time.sleep(3)
-                    break
-            time.sleep(2)
-            click, n = match_page_clickable_check(locker, n)
-            if not click:
-                pyautogui.hotkey('f5')
+        for url in range(len(urls)):
+            click = False
+            n = 0
+            while not click:
+                open_link(urls[url])
+                pyautogui.click(372, 304)
                 time.sleep(3)
-                continue
-            sign_to_write = f'({team1}) esports'
-            pyautogui.hotkey('ctrl', 'f')
-            pyautogui.hotkey('backspace')
-            search_on_page(sign_to_write)
-            x, y, step = [110, 590], 236, 10
-            hs = Search(x, y, step)
-            team1 = hs.pixel_match_check_horizontal()
-            print('position', team1)
-            if team1:
-                break
-            elif n == 10 and not team1:
-                send_msg['msg'] = f'{var.bot_number}: после 10 попыток совпадений не найдено'
-                screenshot(send_msg['msg'])
-                locker['processing'] = False
-                return
+                pyautogui.click(355, 393)
+                time.sleep(3)
+                sign_to_write = f'({team2}) esports'
+                search_on_page(sign_to_write)
+                if n != 0:
+                    pyautogui.press('enter', presses=n)
+                y, step = [192, 685], 3
+                for x in range(400, 470, 30):
+                    vs = Search(x, y, step)
+                    point = vs.pixel_match_check_vertical()
+                    if point:
+                        pyautogui.click(x=point[0], y=point[1])
+                        time.sleep(3)
+                        break
+                time.sleep(2)
+                click, n = match_page_clickable_check(locker, n)
+                if not click:
+                    pyautogui.hotkey('f5')
+                    time.sleep(3)
+                    continue
+                sign_to_write = f'({team1}) esports'
+                pyautogui.hotkey('ctrl', 'f')
+                pyautogui.hotkey('backspace')
+                search_on_page(sign_to_write)
+                x, y, step = [110, 590], 250, 10
+                hs = Search(x, y, step)
+                team1 = hs.pixel_match_check_horizontal()
+                print('position', team1)
+                if team1:
+                    print('nashel team1')
+                    break
+                elif n == 3 and not team1:
+                    break
+                else:
+                    n += 1
+                    continue
             else:
-                n += 1
-                continue
+                if url == len(urls) - 1 and not team1:
+                    send_msg['msg'] = f'{var.bot_number}: после 3 попыток совпадений не найдено'
+                    screenshot(send_msg['msg'])
+                    locker['processing'] = False
+                    return
+                else:
+                    break
         sign_to_write, bet_type = image_sign_to_write_determining(result)
         if sign_to_write == 'all':
             sign_to_write = ['popular', 'all']
