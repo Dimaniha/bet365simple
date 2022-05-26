@@ -1,3 +1,5 @@
+import time
+
 import pyautogui
 
 from functions import *
@@ -146,17 +148,17 @@ def nolive_bet_from_image(task, send_msg, locker, pq):
                 print('position', team1)
                 if team1:
                     print('nashel team1')
+                    exitflag = True
                     break
                 elif n == 3 and not team1:
                     break
                 else:
                     n += 1
                     continue
-            else:
+            if exitflag:
                 if url == len(urls) - 1 and not team1:
                     send_msg['msg'] = f'{var.bot_number}: после 3 попыток совпадений не найдено'
                     screenshot(send_msg['msg'])
-                    locker['processing'] = False
                     return
                 else:
                     break
@@ -173,7 +175,6 @@ def nolive_bet_from_image(task, send_msg, locker, pq):
         if not point:
             send_msg['msg'] = f'{var.bot_number}: не нашел нужную вкладку'
             screenshot(send_msg['msg'])
-            locker['processing'] = False
             return
         pyautogui.click(x=point[0], y=point[1])  # открыл нужную вкладку на странице
         time.sleep(1)
@@ -184,14 +185,14 @@ def nolive_bet_from_image(task, send_msg, locker, pq):
             pyautogui.click(x=point[0], y=point[1])
             make_bet(send_msg)
         pq.remove(task)
-        locker['processing'] = False
         clear_search_window()
         pyautogui.hotkey(var.start_video_hotkey)
+        locker['processing'] = False
         return
     except Exception as e:
         print('error in picture', e)
         pq.remove(task)
-        locker['processing'] = False
         clear_search_window()
         pyautogui.hotkey(var.start_video_hotkey)
+        locker['processing'] = False
         return
