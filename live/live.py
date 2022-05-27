@@ -1,4 +1,7 @@
-from live_bets import *
+from live_Ebasketball.live_Ebasketball import live_Ebasketball, live_Ebasketball_total
+from live_Esoccer.live_Esoccer import live_Esoccer, live_Esoccer_draw, live_Esoccer_total
+from live_football.live_football import live_football
+import re
 
 
 def live(task, send_msg):
@@ -8,7 +11,7 @@ def live(task, send_msg):
         if line == task[1][0]:
             if re.search(r'Under|Over', str(line)):
                 if re.search(r'Halftime', str(line)):
-                    live_basketball_total(task[1], send_msg)
+                    live_Ebasketball_total(task[1], send_msg)
                 else:
                     live_Esoccer_total(task[1], send_msg)
                 break
@@ -30,11 +33,9 @@ def live(task, send_msg):
                 n += 1
         elif re.search(r'https', str(line)):
             url = line
-            if re.search(r'🏓', str(teams)):
-                live_table_tennis(teams, bet_option, bet_team, url)
-            elif re.search(r'🏀', str(teams)):
+            if re.search(r'🏀', str(teams)):
                 print("basket")
-                live_basketball(teams, bet_option, bet_team, url, bet_option_for_msg, send_msg)
+                live_Ebasketball(teams, bet_option, bet_team, url, bet_option_for_msg, send_msg)
             elif re.search(r'⚽', str(teams)):
                 print("footba")
                 live_Esoccer(teams, bet_option, bet_team, url, bet_option_for_msg, send_msg)

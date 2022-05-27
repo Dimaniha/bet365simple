@@ -1,9 +1,12 @@
-﻿from live import *
-from nolive import *
+﻿from functions import *
 from classes import PriorityQueue
 from multiprocessing import Process
+from live.live import live
+from nolive.nolive import nolive
+from nolive.nolive_bet_from_image.nolive_bet_from_image import nolive_bet_from_image
 import multiprocessing
-
+import re
+import datetime
 
 p = PriorityQueue()
 
