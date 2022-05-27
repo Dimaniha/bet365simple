@@ -3,7 +3,7 @@ from PIL import Image, ImageEnhance
 import pytesseract
 import var
 import masks
-import tips_4_screenshots_bets
+from .tips_4_screenshots_bets import *
 import re
 import pyautogui
 import time

@@ -1,6 +1,6 @@
 import re
 from functions import open_link, is_point_clickable_check, make_bet, bot, screenshot, search_on_page
-from live_football_functions import football_half_check, match_goals_check, football_sign_to_write_determining, \
+from .live_football_functions import football_half_check, match_goals_check, football_sign_to_write_determining, \
     football_bet_point_determining
 from classes import Search
 import var

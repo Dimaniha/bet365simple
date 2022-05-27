@@ -1,7 +1,7 @@
 import re
 from functions import open_link, search_on_page, is_point_clickable_check, make_bet, \
     screenshot, full_time_result_check_on_page
-from nolive_Esoccer_draw_functions import *
+from .nolive_Esoccer_draw_functions import *
 from classes import Search
 import var
 import time

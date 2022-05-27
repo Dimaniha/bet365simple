@@ -1,6 +1,6 @@
-from live_Ebasketball.live_Ebasketball import live_Ebasketball, live_Ebasketball_total
-from live_Esoccer.live_Esoccer import live_Esoccer, live_Esoccer_draw, live_Esoccer_total
-from live_football.live_football import live_football
+from .live_Ebasketball.live_Ebasketball import live_Ebasketball, live_Ebasketball_total
+from .live_Esoccer.live_Esoccer import live_Esoccer, live_Esoccer_draw, live_Esoccer_total
+from .live_football.live_football import live_football
 import re
 
 

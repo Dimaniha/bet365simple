@@ -1,5 +1,5 @@
 from functions import open_link, is_point_clickable_check, make_bet, screenshot, clear_search_window
-from nolive_bet_from_image_functions import *
+from .nolive_bet_from_image_functions import *
 
 
 def nolive_bet_from_image(task, send_msg, locker, pq):

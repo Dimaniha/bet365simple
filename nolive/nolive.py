@@ -1,4 +1,4 @@
-from nolive_Esoccer_draw.nolive_Esoccer_draw import nolive_Esoccer_draw
+from .nolive_Esoccer_draw.nolive_Esoccer_draw import nolive_Esoccer_draw
 import re
 import var
 
