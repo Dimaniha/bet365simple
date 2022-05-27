@@ -7,6 +7,8 @@ from nolive.nolive_bet_from_image.nolive_bet_from_image import nolive_bet_from_i
 import multiprocessing
 import re
 import datetime
+import masks
+
 
 p = PriorityQueue()
 
@@ -74,7 +76,7 @@ def start(pq, locker, send_msg):
         else:
             print(capt)
             raw = message.photo[2].file_id
-            path = 'bet_screens/' + raw + ".jpg"
+            path = masks.path_to_bet_screens + raw + ".jpg"
             file_info = bot.get_file(raw)
             downloaded_file = bot.download_file(file_info.file_path)
             print(path)
