@@ -111,11 +111,17 @@ def nolive_bet_from_image(task, send_msg, locker, pq):
             elif team2 == team:
                 team2 = tips_4_screenshots_bets.nicknames[team]
         print(team1, team2)
+        #sign_to_write, bet_type = image_sign_to_write_determining(result)
+        #print(sign_to_write, bet_type)
+        #pq.remove(task)
+        #locker['processing'] = False
+        #return
         for url in range(len(urls)):
             click = False
             n = 0
             while not click:
                 open_link(urls[url])
+                time.sleep(3)
                 pyautogui.click(372, 304)
                 time.sleep(3)
                 pyautogui.click(355, 393)
