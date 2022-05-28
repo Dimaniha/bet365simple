@@ -4,6 +4,7 @@ import pyautogui
 import random
 import telebot
 #import football_title_types
+import pyperclip
 
 
 pyautogui.FAILSAFE = False
@@ -210,5 +211,6 @@ def title_teams_len_check(teams):
 
 def search_on_page(sign_to_write):
     pyautogui.hotkey('ctrl', 'f')
-    pyautogui.write(sign_to_write)
+    pyperclip.copy(sign_to_write)
+    pyautogui.hotkey('ctrl', 'v')
     time.sleep(0.3)
