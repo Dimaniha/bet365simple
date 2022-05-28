@@ -1,11 +1,12 @@
 import re
 from functions import open_link, title_teams_len_check, is_point_clickable_check, full_time_result_check, make_bet, \
-    bot, screenshot, Both_Teams_to_Score_check
+    bot, screenshot, Both_Teams_to_Score_check, search_on_page
 from live import abandoned_boys
 import var
 import pyautogui
 import time
 import datetime
+from classes import Search
 
 
 def live_Esoccer(teams, bet_option, bet_team, url, bet_option_for_msg, send_msg):
@@ -117,6 +118,42 @@ def live_Esoccer_total(task, send_msg):
                 point = [x, y]
                 break
     print(x, y)
+    clickable = is_point_clickable_check(point)
+    if clickable:
+        pyautogui.click(x=point[0], y=point[1])
+        make_bet(send_msg)
+    else:
+        return
+
+
+def live_Esoccer_asian_handicap(teams, bet_option, bet_team, url, bet_option_for_msg, send_msg):
+    print('handicap football')
+    bet_name = re.split(r"-|\+", str(bet_team))[0]
+    print(bet_name)
+    if bet_name.strip() in abandoned_boys.esoccer_Fulltime_Asian_Hand_list:
+        bot.send_message(var.uid, f'{var.bot_number}: Фора на {bet_name} - ставку пропускаю')
+        return
+    teams = teams[1:].split('vs')
+    teams_len = len(teams)
+    print(teams)
+    open_link(url)
+    sign_to_write = 'asian handicap'
+    search_on_page(sign_to_write)
+    time.sleep(0.2)
+    x, y, step = 90, [192, 685], 10
+    vs = Search(x, y, step)
+    point = vs.pixel_match_check_vertical()
+    for word in range(0, teams_len):
+        if re.match(rf'{bet_name.strip().lower()}', str(teams[word].strip().lower())):
+            send_msg['msg'] = f'{var.bot_number}: успешно поставил на {bet_option_for_msg}'
+            if word == 0:  # column 1
+                print("column 1")
+                point = [258, point[1]+72]
+                break
+            else:  # column 2
+                print("column 2")
+                point = [411, point[1]+72]
+                break
     clickable = is_point_clickable_check(point)
     if clickable:
         pyautogui.click(x=point[0], y=point[1])

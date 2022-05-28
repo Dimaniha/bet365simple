@@ -23,11 +23,11 @@ def nolive_bet_from_image(task, send_msg, locker, pq):
         print(team1, team2)
         team1, team2 = teams_confirmation(team1, team2)
         print(team1, team2)
-        sign_to_write, bet_type = image_sign_to_write_determining(result)
-        print(sign_to_write, bet_type)
-        pq.remove(task)
-        locker['processing'] = False
-        return
+        #sign_to_write, bet_type = image_sign_to_write_determining(result)
+        #print(sign_to_write, bet_type)
+        #pq.remove(task)
+        #locker['processing'] = False
+        #return
         for url in range(len(urls)):
             click = False
             n = 0
