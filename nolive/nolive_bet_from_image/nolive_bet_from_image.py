@@ -40,9 +40,12 @@ def nolive_bet_from_image(task, send_msg, locker, pq):
                 time.sleep(3)
                 sign_to_write = f'({team2}) esports'
                 search_on_page(sign_to_write)
+                if pyautogui.pixelMatchesColor(142, 707, (242, 186, 199)):
+                    next_url = True
+                    break
                 if n != 0:
                     pyautogui.press('enter', presses=n)
-                y, step = [192, 685], 3
+                y, step = [192, 685], 12
                 for x in range(400, 470, 30):
                     vs = Search(x, y, step)
                     point = vs.pixel_match_check_vertical()
@@ -73,13 +76,20 @@ def nolive_bet_from_image(task, send_msg, locker, pq):
                 else:
                     n += 1
                     continue
-            if exitflag:
-                if url == len(urls) - 1 and not team1:
-                    send_msg['msg'] = f'{var.bot_number}: после 3 попыток совпадений не найдено'
-                    screenshot(send_msg['msg'])
-                    return
-                else:
+            try:
+                if exitflag:
                     break
+            except:
+                pass
+            try:
+                if next_url:
+                    continue
+            except:
+                pass
+            if url == len(urls) - 1 and not team1:
+                send_msg['msg'] = f'{var.bot_number}: после 3 попыток совпадений не найдено'
+                screenshot(send_msg['msg'])
+                return
         sign_to_write, bet_type = image_sign_to_write_determining(result)
         if sign_to_write == 'all':
             sign_to_write = ['popular', 'all']
