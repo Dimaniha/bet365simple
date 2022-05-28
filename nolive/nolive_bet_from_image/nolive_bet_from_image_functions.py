@@ -3,7 +3,7 @@ from PIL import Image, ImageEnhance
 import pytesseract
 import var
 import masks
-from .tips_4_screenshots_bets import *
+from nolive.nolive_bet_from_image import tips_4_screenshots_bets
 import re
 import pyautogui
 import time
@@ -117,6 +117,15 @@ def team_tips_check(team1):
         if team1 == team:
             team1 = tips_4_screenshots_bets.nicknames[team]
     return team1
+
+
+def teams_confirmation(team1, team2):
+    for team in tips_4_screenshots_bets.nicknames:
+        if team1 == team:
+            team1 = tips_4_screenshots_bets.nicknames[team]
+        elif team2 == team:
+            team2 = tips_4_screenshots_bets.nicknames[team]
+    return team1, team2
 
 
 def match_page_clickable_check(locker, n):

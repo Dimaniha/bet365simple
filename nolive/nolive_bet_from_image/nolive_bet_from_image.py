@@ -21,17 +21,13 @@ def nolive_bet_from_image(task, send_msg, locker, pq):
         team1 = teams[0].split('(')[1].split(')')[0].lower()
         team2 = teams[1].split('(')[1].split(')')[0].lower()
         print(team1, team2)
-        for team in tips_4_screenshots_bets.nicknames:
-            if team1 == team:
-                team1 = tips_4_screenshots_bets.nicknames[team]
-            elif team2 == team:
-                team2 = tips_4_screenshots_bets.nicknames[team]
+        team1, team2 = teams_confirmation(team1, team2)
         print(team1, team2)
-        #sign_to_write, bet_type = image_sign_to_write_determining(result)
-        #print(sign_to_write, bet_type)
-        #pq.remove(task)
-        #locker['processing'] = False
-        #return
+        sign_to_write, bet_type = image_sign_to_write_determining(result)
+        print(sign_to_write, bet_type)
+        pq.remove(task)
+        locker['processing'] = False
+        return
         for url in range(len(urls)):
             click = False
             n = 0

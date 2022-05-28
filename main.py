@@ -118,8 +118,8 @@ def start(pq, locker, send_msg):
 
 def start_process(pq, locker, send_msg):
     while True:
-        if len(pq) > 0 and locker['page_waiting'] is False:
-            if locker['locked'] is False and locker['processing'] is False and pq[0][0] != 2:
+        if len(pq) > 0 and locker['page_waiting'] is False and locker['processing'] is False:
+            if locker['locked'] is False and pq[0][0] != 2:
                 print(pq)
                 print(len(pq))
                 try:
@@ -144,7 +144,7 @@ def start_process(pq, locker, send_msg):
                     if len(pq) == 0:
                         pyautogui.click(x=418, y=155)
                     pyautogui.hotkey(var.start_video_hotkey)
-            elif locker['locked'] is False and locker['processing'] is False and pq[0][0] == 2:
+            elif locker['locked'] is False and pq[0][0] == 2:
                 print("nashel stavku s kartinki")
                 remain_window_check()
                 task = pq[0]
