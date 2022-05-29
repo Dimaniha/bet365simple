@@ -16,7 +16,7 @@ def live_football(task, send_msg):
             break
     time.sleep(2)
     for line in range(len(task) - 1):
-        if re.match(r'#A1|#A2|#A4|#A5', str(task[line])):
+        if re.match(r'#A1|#A2', str(task[line])):
             try:
                 open_link(url)
                 time.sleep(4)
