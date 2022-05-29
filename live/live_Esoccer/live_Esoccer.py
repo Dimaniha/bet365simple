@@ -128,12 +128,15 @@ def live_Esoccer_total(task, send_msg):
 
 def live_Esoccer_asian_handicap(teams, bet_option, bet_team, url, bet_option_for_msg, send_msg):
     print('handicap football')
-    bet_name = re.split(r"-|\+", str(bet_team))[0]
+    if re.search(r"-|\+", str(bet_team)):
+        bet_name = re.split(r"-|\+", str(bet_team))[0]
+    else:
+        bet_name = bet_team.split()[0]
     print(bet_name)
     if bet_name.strip() in abandoned_boys.esoccer_Fulltime_Asian_Hand_list:
         bot.send_message(var.uid, f'{var.bot_number}: Фора на {bet_name} - ставку пропускаю')
         return
-    teams = teams[1:].split('vs')
+    teams = teams[2:].split('vs')
     teams_len = len(teams)
     print(teams)
     open_link(url)
@@ -144,6 +147,7 @@ def live_Esoccer_asian_handicap(teams, bet_option, bet_team, url, bet_option_for
     vs = Search(x, y, step)
     point = vs.pixel_match_check_vertical()
     for word in range(0, teams_len):
+        print(f'{teams[word].strip().lower()}')
         if re.match(rf'{bet_name.strip().lower()}', str(teams[word].strip().lower())):
             send_msg['msg'] = f'{var.bot_number}: успешно поставил на {bet_option_for_msg}'
             if word == 0:  # column 1
