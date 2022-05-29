@@ -12,7 +12,7 @@ def nolive_bet_from_image(task, send_msg, locker, pq):
         crop_a_particular_place(coordinates, image_path, masks.nolive_white_line)
         result = text_recognition(masks.nolive_white_line)
         result = spaces_delete(result)
-        urls = ['https://www.bet365.com/#/AC/B1/C1/D1002/E47578773/G938/', 'https://www.bet365.com/#/AC/B1/C1/D1002/E72260052/G938/'
+        urls = ['https://www.bet365.com/#/AC/B1/C1/D1002/E72260052/G938/', 'https://www.bet365.com/#/AC/B1/C1/D1002/E47578773/G938/'
                 ]
         #8 min = 'https://www.bet365.com/#/AC/B1/C1/D1002/E47578773/G938/'
         #10min = 'https://www.bet365.com/#/AC/B1/C1/D1002/E72260052/G938/'

@@ -152,9 +152,13 @@ def start_process(pq, locker, send_msg):
                 bet_from_image_proc.start()
                 locker['processing'] = True
         elif locker['page_waiting'] is True and len(pq) > 1 and pq[0][0] == 0:
-            print('bolshe 1')
+            print('bolshe 1 terminate')
             bet_from_image_proc.terminate()
             locker['page_waiting'] = False
+            locker['processing'] = False
+        elif locker['processing'] is True and locker['page_waiting'] is False and len(pq) > 1 and pq[0][0] == 0:
+            print('bolshe 1')
+            bet_from_image_proc.terminate()
             locker['processing'] = False
 
 
