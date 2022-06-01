@@ -158,6 +158,10 @@ def live_Esoccer_asian_handicap(teams, bet_option, bet_team, url, bet_option_for
                 print("column 2")
                 point = [411, point[1]+72]
                 break
+    if point[1] > 600:
+        pyautogui.press('down')
+        time.sleep(0.5)
+        point[1] = point[1] + 15
     clickable = is_point_clickable_check(point)
     if clickable:
         pyautogui.click(x=point[0], y=point[1])

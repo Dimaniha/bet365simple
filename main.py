@@ -120,7 +120,7 @@ def start_process(pq, locker, send_msg):
     while True:
         if len(pq) > 0 and locker['page_waiting'] is False:
             try:
-                #remain_window_check()
+                remain_window_check()
                 if locker['locked'] is False and locker['processing'] is False and pq[0][0] != 2:
                     print(pq)
                     print(len(pq))
