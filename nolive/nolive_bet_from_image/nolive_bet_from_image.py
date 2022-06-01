@@ -1,4 +1,4 @@
-from functions import open_link, is_point_clickable_check, make_bet, screenshot, clear_search_window
+from functions import open_link, is_point_clickable_check, make_bet, screenshot
 from .nolive_bet_from_image_functions import *
 
 
@@ -88,7 +88,8 @@ def nolive_bet_from_image(task, send_msg, locker, pq):
                 pass
             if url == len(urls) - 1 and not team1:
                 send_msg['msg'] = f'{var.bot_number}: после 3 попыток совпадений не найдено'
-                screenshot(send_msg['msg'])
+                screenshot(send_msg)
+                prereturn_actions(pq, task, locker)
                 return
         sign_to_write, bet_type = image_sign_to_write_determining(result)
         if sign_to_write == 'all':
@@ -102,7 +103,8 @@ def nolive_bet_from_image(task, send_msg, locker, pq):
         print('point')
         if not point:
             send_msg['msg'] = f'{var.bot_number}: не нашел нужную вкладку'
-            screenshot(send_msg['msg'])
+            screenshot(send_msg)
+            prereturn_actions(pq, task, locker)
             return
         pyautogui.click(x=point[0], y=point[1])  # открыл нужную вкладку на странице
         time.sleep(1)
@@ -112,15 +114,9 @@ def nolive_bet_from_image(task, send_msg, locker, pq):
         if clickable:
             pyautogui.click(x=point[0], y=point[1])
             make_bet(send_msg)
-        pq.remove(task)
-        clear_search_window()
-        pyautogui.hotkey(var.start_video_hotkey)
-        locker['processing'] = False
+        prereturn_actions(pq, task, locker)
         return
     except Exception as e:
         print('error in picture', e)
-        pq.remove(task)
-        clear_search_window()
-        pyautogui.hotkey(var.start_video_hotkey)
-        locker['processing'] = False
+        prereturn_actions(pq, task, locker)
         return

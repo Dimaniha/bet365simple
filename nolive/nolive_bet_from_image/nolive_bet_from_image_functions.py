@@ -1,4 +1,4 @@
-from functions import full_time_result_check_on_page, search_on_page
+from functions import full_time_result_check_on_page, search_on_page, clear_search_window
 from PIL import Image, ImageEnhance
 import pytesseract
 import var
@@ -93,11 +93,14 @@ def image_sign_to_write_determining(result):
     for x in tips_4_screenshots_bets.full_time_result_tips:
         if re.search(rf'{x}', str(result[1])):
             print('pobeda fultime')
-            if re.search(r'draw|Draw', str(bet_type)):
-                bet_type = 'draw'
-            else:
-                bet_type = bet_type.split('(')[1].split(')')[0].lower()
-                bet_type = team_tips_check(bet_type)
+            bet_type = bet_type.split('(')[1].split(')')[0].lower()
+            bet_type = team_tips_check(bet_type)
+            sign_to_write = 'all'
+            break
+    for x in tips_4_screenshots_bets.full_time_draw_tips:
+        if re.search(rf'{x}', str(result[1])):
+            print('fultime draw')
+            bet_type = 'draw'
             sign_to_write = 'all'
             break
     for x in tips_4_screenshots_bets.goal_line_tips:
@@ -204,3 +207,10 @@ def image_point_to_click_determining(sign_to_write, bet_type, y, teams):
             point = vs.pixel_match_check_vertical()
             point = [x_goals[1], point[1]+80]
     return point
+
+
+def prereturn_actions(pq, task, locker):
+    pq.remove(task)
+    clear_search_window()
+    pyautogui.hotkey(var.start_video_hotkey)
+    locker['processing'] = False
