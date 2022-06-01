@@ -52,18 +52,16 @@ def live_football(task, send_msg):
                 pyautogui.click(x=point[0], y=point[1])
                 time.sleep(1)
                 point = football_bet_point_determining(sign_to_write, left, bet_option_for_msg, half, match_goals)
-                send_msg['msg'] = ''
-                send_msg['msg'] = f'{var.bot_number}: успешно поставил на {bet_option_for_msg[0]}'
+                msg = f'{var.bot_number}: успешно поставил на {bet_option_for_msg[0]}'
                 clickable = is_point_clickable_check(point)
                 if clickable:
                     pyautogui.click(x=point[0], y=point[1])
-                    make_bet(send_msg)
+                    make_bet(msg)
                     placed_bets.append(bet_option_for_msg)
                 else:
                     continue
             except Exception as e:
                 print('osibka v futbole', e)
-                send_msg['msg'] = ''
-                send_msg['msg'] = f'{var.bot_number}: что-то пошло не так при попытке ставки'
-                screenshot(send_msg)
+                msg = f'{var.bot_number}: что-то пошло не так при попытке ставки'
+                screenshot(msg)
                 continue
