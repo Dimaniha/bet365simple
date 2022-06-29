@@ -65,25 +65,6 @@ def start(pq, locker, send_msg):
             text = text + str(i) + '\n'
         bot.edit_message_caption(chat_id=message.chat.id, message_id=message.message_id + 1, caption=text)
 
-    @bot.channel_post_handler(func=lambda message: True, content_types=['photo'])
-    @bot.message_handler(func=lambda message: True, content_types=['photo'])
-    def get_picture_prediction(message):
-        print('nasd')
-        capt = message.caption
-        if re.search(r'bot', str(capt)):
-            print('neet')
-            return
-        else:
-            print(capt)
-            raw = message.photo[2].file_id
-            path = masks.path_to_bet_screens + raw + ".jpg"
-            file_info = bot.get_file(raw)
-            downloaded_file = bot.download_file(file_info.file_path)
-            print(path)
-            with open(path, 'wb') as new_file:
-                new_file.write(downloaded_file)
-            p.add_new(path, pq, priority=2)
-
     @bot.channel_post_handler(func=lambda message: True, content_types=['text'])
     @bot.message_handler(func=lambda message: True, content_types=['text'])
     def get_message(message):
@@ -120,7 +101,7 @@ def start_process(pq, locker, send_msg):
     while True:
         if len(pq) > 0 and locker['page_waiting'] is False:
             try:
-                remain_window_check()
+                #remain_window_check()
                 if locker['locked'] is False and locker['processing'] is False and pq[0][0] != 2:
                     print(pq)
                     print(len(pq))

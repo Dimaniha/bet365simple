@@ -1,2 +1,4 @@
 nolive_white_line = 'cropped_screenshots/nolive_white_line.jpg'
 path_to_bet_screens = 'nolive/nolive_bet_from_image/bet_screens/'
+live_football_asian_lines_screenshot = 'screenshots/live_football_asian_lines_screenshot.jpg'
+live_football_asian_lines_screenshot_cropped = 'cropped_screenshots/live_football_asian_lines_screenshot_croped.jpg'

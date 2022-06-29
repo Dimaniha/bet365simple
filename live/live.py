@@ -1,5 +1,7 @@
-from .live_Ebasketball.live_Ebasketball import live_Ebasketball, live_Ebasketball_total
-from .live_Esoccer.live_Esoccer import live_Esoccer, live_Esoccer_draw, live_Esoccer_total, live_Esoccer_asian_handicap
+from .live_Ebasketball.live_Ebasketball import live_Ebasketball, live_Ebasketball_total_halftime, \
+    live_Ebasketball_total_fulltime
+from .live_Esoccer.live_Esoccer import live_Esoccer, live_Esoccer_total, live_Esoccer_asian_handicap, \
+    live_Esoccer_fulltime_result
 from .live_football.live_football import live_football
 import re
 
@@ -11,13 +13,15 @@ def live(task, send_msg):
         if line == task[1][0]:
             if re.search(r'Under|Over', str(line)):
                 if re.search(r'Halftime', str(line)):
-                    live_Ebasketball_total(task[1], send_msg)
+                    live_Ebasketball_total_halftime(task[1], send_msg)
+                elif re.search(r'(Fulltime Under)|(Fulltime Over)', str(line)):
+                    live_Ebasketball_total_fulltime(task[1], send_msg)
                 else:
                     live_Esoccer_total(task[1], send_msg)
                 break
-            elif re.search(r'Draw', str(line)):
-                print('draw')
-                live_Esoccer_draw(task[1], send_msg)
+            elif re.search(r'Fulltime Result', str(line)):
+                print('Fulltime Result')
+                live_Esoccer_fulltime_result(task[1], send_msg)
                 break
             elif re.search(r'Fulltime Asian Hand', str(line)):
                 bet_option_for_msg = line[1:]

@@ -23,11 +23,11 @@ def nolive_bet_from_image(task, send_msg, locker, pq):
         print(team1, team2)
         team1, team2 = teams_confirmation(team1, team2)
         print(team1, team2)
-        #sign_to_write, bet_type = image_sign_to_write_determining(result)
-        #print(sign_to_write, bet_type)
-        #pq.remove(task)
-        #locker['processing'] = False
-        #return
+        sign_to_write, bet_type = image_sign_to_write_determining(result)
+        print(sign_to_write, bet_type)
+        pq.remove(task)
+        locker['processing'] = False
+        return
         for url in range(len(urls)):
             click = False
             n = 0
@@ -45,9 +45,9 @@ def nolive_bet_from_image(task, send_msg, locker, pq):
                     break
                 if n != 0:
                     pyautogui.press('enter', presses=n)
-                y, step = [192, 685], 12
+                y, step, color = [192, 685], 12, (56, 216, 120)
                 for x in range(400, 470, 30):
-                    vs = Search(x, y, step)
+                    vs = Search(x, y, step, color)
                     point = vs.pixel_match_check_vertical()
                     if point:
                         pyautogui.click(x=point[0], y=point[1])
@@ -63,8 +63,8 @@ def nolive_bet_from_image(task, send_msg, locker, pq):
                 pyautogui.hotkey('ctrl', 'f')
                 pyautogui.hotkey('backspace')
                 search_on_page(sign_to_write)
-                x, y, step = [110, 590], 250, 10
-                hs = Search(x, y, step)
+                x, y, step, color = [110, 590], 250, 10, (56, 216, 120)
+                hs = Search(x, y, step, color)
                 team1 = hs.pixel_match_check_horizontal()
                 print('position', team1)
                 if team1:

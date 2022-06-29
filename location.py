@@ -12,4 +12,12 @@ def location():  # определение коорд указателя для �
     time.sleep(40)
 
 
+def location2():
+    x = 270
+    for y in range(360, 470):
+        pix = pyautogui.pixel(x, y)
+        print(x, y, pix)
+
+
 location()
+#location2()

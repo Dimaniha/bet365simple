@@ -15,9 +15,11 @@ def live_football(task, send_msg):
             url = line
             break
     time.sleep(2)
+    n = 0
     for line in range(len(task) - 1):
         if re.match(r'#A1|#A2', str(task[line])):
             try:
+                n += 1
                 open_link(url)
                 time.sleep(4)
                 print('some A')
@@ -46,8 +48,8 @@ def live_football(task, send_msg):
                 print(match_goals)
                 sign_to_write = football_sign_to_write_determining(bet_option_for_msg, task[line])
                 search_on_page(sign_to_write)
-                x_4_search, y_4_search, step = [67, 635], 300, 3
-                hs = Search(x_4_search, y_4_search, step)
+                x_4_search, y_4_search, step, color = [67, 635], 300, 3, (56, 216, 120)
+                hs = Search(x_4_search, y_4_search, step, color)
                 point = hs.pixel_match_check_horizontal()
                 pyautogui.click(x=point[0], y=point[1])
                 time.sleep(1)
@@ -59,9 +61,19 @@ def live_football(task, send_msg):
                     make_bet(msg)
                     placed_bets.append(bet_option_for_msg)
                 else:
-                    continue
+                    if n > 6:
+                        msg = f'{var.bot_number}: 6 попыток поиска значения не дали результата'
+                        screenshot(msg)
+                        return
+                    else:
+                        continue
             except Exception as e:
-                print('osibka v futbole', e)
-                msg = f'{var.bot_number}: что-то пошло не так при попытке ставки'
-                screenshot(msg)
-                continue
+                if n > 6:
+                    msg = f'{var.bot_number}: 6 попыток поиска значения не дали результата + ошибка'
+                    screenshot(msg)
+                    return
+                else:
+                    print('osibka v futbole', e)
+                    msg = f'{var.bot_number}: что-то пошло не так при попытке ставки'
+                    screenshot(msg)
+                    continue

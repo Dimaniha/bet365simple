@@ -4,6 +4,8 @@ from classes import Search
 import time
 import pyautogui
 import var
+import masks
+from nolive.nolive_bet_from_image.nolive_bet_from_image_functions import crop_a_particular_place, text_recognition
 
 
 def football_half_check(bet_option_for_msg):
@@ -44,8 +46,8 @@ def football_bet_point_determining(sign_to_write, left, bet_option, half, match_
         if sign_to_write == 'half':
             sign_to_write = 'half time result'
             search_on_page(sign_to_write)
-            x, y, step = 110, [192, 685], 3
-            vs = Search(x, y, step)
+            x, y, step, color = 110, [192, 685], 3, (56, 216, 120)
+            vs = Search(x, y, step, color)
             point = vs.pixel_match_check_vertical()
             if left:
                 point = [178, point[1] + 60]
@@ -55,8 +57,8 @@ def football_bet_point_determining(sign_to_write, left, bet_option, half, match_
         elif sign_to_write == 'all':
             sign_to_write = 'fulltime result'
             search_on_page(sign_to_write)
-            x, y, step = 110, [192, 685], 3
-            vs = Search(x, y, step)
+            x, y, step, color = 110, [192, 685], 3, (56, 216, 120)
+            vs = Search(x, y, step, color)
             point = vs.pixel_match_check_vertical()
             if left:
                 point = [163, point[1] + 60]
@@ -93,13 +95,13 @@ def football_bet_point_determining(sign_to_write, left, bet_option, half, match_
                     sign_to_write = 'alternative match goals'
             print(sign_to_write)
             search_on_page(sign_to_write)
-            x, y, step = [110, 120], [192, 685], 3
-            vs = Search(x[0], y, step)
+            x, y, step, color = [110, 120], [192, 685], 3, (56, 216, 120)
+            vs = Search(x[0], y, step, color)
             point = vs.pixel_match_check_vertical()
             if point:
                 sign_to_write = bet_option[0][:-1].split('(')[1]
                 search_on_page(sign_to_write)
-                vs = Search(x[1], y, step)
+                vs = Search(x[1], y, step, color)
                 point = vs.pixel_match_check_vertical()
             else:
                 print('matcha ne naideno')
@@ -153,18 +155,39 @@ def football_bet_point_determining(sign_to_write, left, bet_option, half, match_
 def asian_lines_complex(bet_option):
     try:
         n = 0
-        x_4_search, y_4_search, step = [193, 200], [376, 686], 3
-        on_line1, point1 = asian_lines_point_determining(bet_option, x_4_search[0], y_4_search, step)
+        x_4_search, y_4_search, step, color = [193, 200], [376, 686], 3, (56, 216, 120)
+        on_line1, point1 = asian_lines_point_determining(bet_option, x_4_search[0], y_4_search, step, color)
         if on_line1:
             return point1
-        on_line2, point2 = asian_lines_point_determining(bet_option, x_4_search[1], y_4_search, step)
-        while not on_line1 or on_line2 and n < 6:
+        on_line2, point2 = asian_lines_point_determining(bet_option, x_4_search[1], y_4_search, step, color)
+        while not on_line1 or on_line2:
             pyautogui.hotkey('enter')
-            on_line1, point1 = asian_lines_point_determining(bet_option, x_4_search[0], y_4_search, step)
+            on_line1, point1 = asian_lines_point_determining(bet_option, x_4_search[0], y_4_search, step, color)
             if on_line1:
                 break
-            on_line2, point2 = asian_lines_point_determining(bet_option, x_4_search[1], y_4_search, step)
+            on_line2, point2 = asian_lines_point_determining(bet_option, x_4_search[1], y_4_search, step, color)
             n += 1
+            if n > 6:
+                x, y, step, color = 90, [192, 685], 10,
+                vs = Search(x, y, step, color)
+                point = vs.pixel_match_check_vertical()
+                if point[1] < 470:
+                    x_4_search, y_4_search, step, color = 165, [376, 686], 3, (56, 216, 120)
+                    on_line1, point1 = asian_lines_point_determining(bet_option, x_4_search, y_4_search, step, color)
+                    if on_line1:
+                        break
+                    else:
+                        return
+                    '''
+                    myScreenshot = pyautogui.screenshot()
+                    myScreenshot.save(masks.live_football_asian_lines_screenshot)
+                    coordinates = [145, 413, 240, 438]
+                    crop_a_particular_place(coordinates, masks.live_football_asian_lines_screenshot,
+                                            masks.live_football_asian_lines_screenshot_cropped)
+                    result = text_recognition(masks.live_football_asian_lines_screenshot_cropped)
+                    print(result)
+                    '''
+                    '''вырезка участка скрина и прогон его через тессеракт и определение цифор'''
         print('vozvrashayu point iz asian_lines_complex')
         if point1:
             return point1
@@ -174,10 +197,10 @@ def asian_lines_complex(bet_option):
         print('oshibkla v asian_lines_complex', e)
 
 
-def asian_lines_point_determining(bet_option, x_4_search, y_4_search, step):
+def asian_lines_point_determining(bet_option, x_4_search, y_4_search, step, color):
     try:
         search_on_page(bet_option)
-        vs = Search(x_4_search, y_4_search, step)
+        vs = Search(x_4_search, y_4_search, step, color)
         point = vs.pixel_match_check_vertical()
         if point:
             print('vozvrashayu point iz asian_lines_point_determining')

@@ -5,6 +5,7 @@ import random
 import telebot
 #import football_title_types
 import pyperclip
+import re
 
 
 pyautogui.FAILSAFE = False
@@ -106,7 +107,6 @@ def open_link(url):
 
 
 def check_login():
-    pyautogui.click(x=490, y=154)
     pyautogui.hotkey('f5')
     time.sleep(10)
     pyautogui.hotkey('ctrl', 'f')
@@ -120,7 +120,10 @@ def check_login():
         pyautogui.write(var.paswd)
         time.sleep(random.random())
         pyautogui.click(x=621, y=350)
-        time.sleep(8)
+        time.sleep(10)
+        pyautogui.click(x=597, y=155)
+        time.sleep(2)
+        pyautogui.click(x=238, y=205)
         send_msg = f'{var.bot_number}: я попытался залогиниться, надо проверить скрин'
         screenshot(send_msg)
         print('залогинилось')
@@ -214,3 +217,11 @@ def search_on_page(sign_to_write):
     pyperclip.copy(sign_to_write)
     pyautogui.hotkey('ctrl', 'v')
     time.sleep(0.3)
+
+
+def teams_icon_cutter(line):
+    for i in range(len(line)):
+        if re.match(r'\w', str(line[i])):
+            teams = line[i:].split('vs')
+            print(teams)
+            return teams

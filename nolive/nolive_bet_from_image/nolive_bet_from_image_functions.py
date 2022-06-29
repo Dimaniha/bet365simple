@@ -63,6 +63,7 @@ def text_recognition(screen_path):
     img_edit = enhancer2.enhance(1.5)
     img_edit.save(masks.nolive_white_line)
     result = pytesseract.image_to_string(img_edit)
+    print(result)
     print(result.split('\n'))
     return result.split('\n')
 
@@ -148,11 +149,11 @@ def match_page_clickable_check(locker, n):
 
 def tab_check(sign_to_write):
     search_on_page(sign_to_write)
-    x, y, step = [256, 590], [290, 322, 331], 10
+    x, y, step, color = [256, 590], [290, 322, 331], 10, (56, 216, 120)
     for y_ in y:
         if y_ == 331:
             x = [67, 375]
-        hs = Search(x, y_, step)
+        hs = Search(x, y_, step, color)
         point = hs.pixel_match_check_horizontal()
         if point:
             return point
@@ -202,8 +203,8 @@ def image_point_to_click_determining(sign_to_write, bet_type, y, teams):
         elif sign_to_write == 'goals':
             sign_to_write = 'match goals'
             search_on_page(sign_to_write)
-            x, y, step = 110, [192, 685], 3
-            vs = Search(x, y, step)
+            x, y, step, color = 110, [192, 685], 3, (56, 216, 120)
+            vs = Search(x, y, step, color)
             point = vs.pixel_match_check_vertical()
             point = [x_goals[1], point[1]+80]
     return point

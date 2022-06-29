@@ -26,8 +26,8 @@ def nolive_Esoccer_draw(task, send_msg):
         search_on_page(sign_to_write)
         if iter != 0:
             pyautogui.press('enter', presses=iter)
-        x, y, step = 350, [192, 685], 3
-        vs = Search(x, y, step)
+        x, y, step, color = 350, [192, 685], 3, (56, 216, 120)
+        vs = Search(x, y, step, color)
         point = vs.pixel_match_check_vertical()
         pyautogui.click(x=point[0], y=point[1])
         time.sleep(2)
