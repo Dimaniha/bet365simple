@@ -16,6 +16,8 @@ def open_link(name):
     time.sleep(0.1)
     pyautogui.click(x=458, y=282)
     time.sleep(2)
+    pyautogui.click(x=727, y=125)
+    time.sleep(0.1)
     pyautogui.click(x=49, y=254)
     time.sleep(0.1)
     pyautogui.click(x=686, y=203)

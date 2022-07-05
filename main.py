@@ -1,7 +1,7 @@
 ﻿from functions import *
 from classes import PriorityQueue
 from multiprocessing import Process
-from live.live import live
+import live
 import multiprocessing
 import datetime
 
