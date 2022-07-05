@@ -2,12 +2,8 @@
 from classes import PriorityQueue
 from multiprocessing import Process
 from live.live import live
-from nolive.nolive import nolive
-from nolive.nolive_bet_from_image.nolive_bet_from_image import nolive_bet_from_image
 import multiprocessing
-import re
 import datetime
-import masks
 
 
 p = PriorityQueue()
@@ -37,22 +33,18 @@ def start(pq, locker, send_msg):
     @bot.message_handler(commands=['old'])
     @busy_check
     def settled_screen(message):
-        remain_window_check()
-        pyautogui.click(x=597, y=155)
-        time.sleep(1)
-        pyautogui.click(x=238, y=205)
-        send_msg = f'{var.bot_number}: Скриншот My bets - Settled.'
+        pyautogui.click(x=909, y=126)
+        send_msg = f'{var.bot_number}: Скриншот истории.'
         screenshot(send_msg)
 
     @bot.channel_post_handler(commands=['new'])
     @bot.message_handler(commands=['new'])
     @busy_check
     def unsettled_screen(message):
-        remain_window_check()
-        pyautogui.click(x=597, y=155)
-        time.sleep(1)
-        pyautogui.click(x=176, y=206)
-        send_msg = f'{var.bot_number}: Скриншот My bets - Unsettled.'
+        pyautogui.click(x=909, y=126)
+        time.sleep(0.1)
+        pyautogui.click(x=741, y=149)
+        send_msg = f'{var.bot_number}: Скриншот нерасчитанных.'
         screenshot(send_msg)
 
     @bot.edited_message_handler(func=lambda message: True, content_types=['text'])
@@ -72,22 +64,7 @@ def start(pq, locker, send_msg):
             answer = message.text
             print(answer)
             answer = answer.split('\n')
-            for line in answer:
-                if re.search(r'www.bet365.com', str(line)):
-                    if re.search(r'#/IP/EV', str(line)):  # live
-                        print("live")
-                        p.add_new(answer, pq, priority=0)
-                    else:  # nolive
-                        print("nolive")
-                        p.add_new(answer, pq, priority=1)
-                    break
-                elif re.search(r'https://', str(line)) and not re.search(r'www.bet365.com', str(line)):
-                    bot.send_message(var.uid, f'{var.bot_number}: Линия другого букмекера. Ставку пропускаю.')
-                    break
-                elif re.match(r'bet365.com', str(line)):
-                    p.add_new(answer, pq, priority=0)
-                    break
-
+            p.add_new(answer, pq, priority=0)
         except Exception as e:
             print("error!!", e)
 
@@ -97,53 +74,19 @@ def start(pq, locker, send_msg):
         print("error while polling", e)
 
 
-def start_process(pq, locker, send_msg):
+def start_process(pq, send_msg):
     while True:
-        if len(pq) > 0 and locker['page_waiting'] is False:
+        if len(pq) > 0:
             try:
-                #remain_window_check()
-                if locker['locked'] is False and locker['processing'] is False and pq[0][0] != 2:
-                    print(pq)
-                    print(len(pq))
-                    try:
-                        task = pq[0]
-                        pyautogui.hotkey(var.start_video_hotkey)
-                        if re.search(r'#/IP/EV', str(task)):
-                            print("nashel live")
-                            live(task, send_msg)
-                        elif task[0] == 1:
-                            print("nashel nolive")
-                            nolive(task, send_msg, locker)
-                        pq.remove(task)
-                        if len(pq) == 0:
-                            pyautogui.click(x=418, y=155)
-                        clear_search_window()
-                        pyautogui.hotkey(var.start_video_hotkey)
-                    except Exception as e:
-                        print('эксепшон', e)
-                        pq.remove(task)
-                        clear_search_window()
-                        if len(pq) == 0:
-                            pyautogui.click(x=418, y=155)
-                        pyautogui.hotkey(var.start_video_hotkey)
-                elif locker['locked'] is False and locker['processing'] is False and pq[0][0] == 2:
-                    print("nashel stavku s kartinki")
-                    remain_window_check()
-                    task = pq[0]
-                    bet_from_image_proc = Process(target=nolive_bet_from_image, args=(task, send_msg, locker, pq))
-                    bet_from_image_proc.start()
-                    locker['processing'] = True
+                print(pq)
+                print(len(pq))
+                task = pq[0]
+                pyautogui.hotkey(var.start_video_hotkey)
+                live(task, send_msg)
+                pq.remove(task)
+                pyautogui.hotkey(var.start_video_hotkey)
             except Exception as e:
                 print('exception in main circle', e)
-        elif locker['page_waiting'] is True and len(pq) > 1 and pq[0][0] == 0:
-            print('bolshe 1 terminate')
-            bet_from_image_proc.terminate()
-            locker['page_waiting'] = False
-            locker['processing'] = False
-        elif locker['processing'] is True and locker['page_waiting'] is False and len(pq) > 1 and pq[0][0] == 0:
-            print('bolshe 1')
-            bet_from_image_proc.terminate()
-            locker['processing'] = False
 
 
 if __name__ == '__main__':
@@ -153,20 +96,13 @@ if __name__ == '__main__':
     send_msg['msg'] = ' '
     locker = manager.dict()
     locker['locked'] = False
-    locker['page_waiting'] = False
-    locker['processing'] = False
     pq = manager.list()
     start_proc = Process(target=start, args=(pq, locker, send_msg))
-    work_proc = Process(target=start_process, args=(pq, locker, send_msg))
+    work_proc = Process(target=start_process, args=(pq, send_msg))
     start_proc.start()
     work_proc.start()
     while True:
-        if (datetime.datetime.now() - start_time).total_seconds() // 1800.0 >= 1 and len(pq) == 0:
-            locker['locked'] = True
-            check_login()
-            start_time = datetime.datetime.now()
-            locker['locked'] = False
-        elif not start_proc.is_alive():
+        if not start_proc.is_alive():
             print("terminate")
             start_proc.terminate()
             start_proc = Process(target=start, args=(pq, locker, send_msg))
