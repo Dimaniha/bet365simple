@@ -1,7 +1,7 @@
 ﻿from functions import *
 from classes import PriorityQueue
 from multiprocessing import Process
-import live
+from live import live
 import multiprocessing
 import datetime
 
@@ -87,6 +87,8 @@ def start_process(pq, send_msg):
                 pyautogui.hotkey(var.start_video_hotkey)
             except Exception as e:
                 print('exception in main circle', e)
+                pq.remove(task)
+                pyautogui.hotkey(var.start_video_hotkey)
 
 
 if __name__ == '__main__':
