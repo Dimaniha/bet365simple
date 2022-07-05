@@ -1,6 +1,6 @@
 import re
 from functions import open_link, bot, teams_icon_cutter, screenshot
-from live import abandoned_boys
+import abandoned_boys
 import var
 import pyautogui
 
