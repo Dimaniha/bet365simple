@@ -21,6 +21,16 @@ def open_link(name):
     return
 
 
+def one_click_bet_check():
+    pyautogui.click(x=726, y=128)
+    time.sleep(2)
+    if pyautogui.pixelMatchesColor(683, 206, (48, 150, 209)):
+        return
+    else:
+        pyautogui.click(x=683, y=206)
+        time.sleep(2)
+
+
 def screenshot(send_msg):
     myScreenshot = pyautogui.screenshot()
     myScreenshot.save(var.feedback_screenshot)
