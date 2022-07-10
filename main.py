@@ -9,29 +9,15 @@ import datetime
 p = PriorityQueue()
 
 
-def start(pq, locker, send_msg):
-    def busy_check(f):
-        def wrapper(message):
-            if len(pq) == 0 and locker['locked'] is False:
-                locker['locked'] = True
-                result = f(message)
-                locker['locked'] = False
-                return result
-            else:
-                bot.send_message(var.uid, f'{var.bot_number}: Я пока занят, напишите позже.')
-                return
-        return wrapper
-
+def start(pq, send_msg):
     @bot.channel_post_handler(commands=['screen'])
     @bot.message_handler(commands=['screen'])
-    @busy_check
     def make_screen(message):
         send_msg = f'{var.bot_number}: Скриншот текущей страницы.'
         screenshot(send_msg)
 
     @bot.channel_post_handler(commands=['old'])
     @bot.message_handler(commands=['old'])
-    @busy_check
     def settled_screen(message):
         pyautogui.click(x=909, y=126)
         send_msg = f'{var.bot_number}: Скриншот истории.'
@@ -39,13 +25,17 @@ def start(pq, locker, send_msg):
 
     @bot.channel_post_handler(commands=['new'])
     @bot.message_handler(commands=['new'])
-    @busy_check
     def unsettled_screen(message):
         pyautogui.click(x=909, y=126)
         time.sleep(0.1)
         pyautogui.click(x=741, y=149)
         send_msg = f'{var.bot_number}: Скриншот нерасчитанных.'
         screenshot(send_msg)
+
+    @bot.channel_post_handler(commands=['res'])
+    @bot.message_handler(commands=['res'])
+    def refresh_page(message):
+        pyautogui.hotkey('f5')
 
     @bot.edited_message_handler(func=lambda message: True, content_types=['text'])
     @bot.edited_channel_post_handler(func=lambda message: True, content_types=['text'])
@@ -96,10 +86,8 @@ if __name__ == '__main__':
     manager = multiprocessing.Manager()
     send_msg = manager.dict()
     send_msg['msg'] = ' '
-    locker = manager.dict()
-    locker['locked'] = False
     pq = manager.list()
-    start_proc = Process(target=start, args=(pq, locker, send_msg))
+    start_proc = Process(target=start, args=(pq, send_msg))
     work_proc = Process(target=start_process, args=(pq, send_msg))
     start_proc.start()
     work_proc.start()
@@ -107,5 +95,5 @@ if __name__ == '__main__':
         if not start_proc.is_alive():
             print("terminate")
             start_proc.terminate()
-            start_proc = Process(target=start, args=(pq, locker, send_msg))
+            start_proc = Process(target=start, args=(pq, send_msg))
             start_proc.start()

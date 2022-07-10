@@ -31,6 +31,20 @@ def one_click_bet_check():
         time.sleep(2)
 
 
+def login_check():
+    pyautogui.click(x=997, y=59)
+    time.sleep(1)
+    pyautogui.click(x=849, y=477)
+    time.sleep(1)
+    pyautogui.write('balance')
+    time.sleep(1)
+    if pyautogui.pixelMatchesColor(940, 95, (56, 216, 120)):
+        return
+    else:
+        pyautogui.hotkey('f5')
+        time.sleep(2)
+
+
 def screenshot(send_msg):
     myScreenshot = pyautogui.screenshot()
     myScreenshot.save(var.feedback_screenshot)
