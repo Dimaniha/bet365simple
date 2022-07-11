@@ -1,5 +1,6 @@
 import re
-from functions import open_link, bot, teams_icon_cutter, screenshot, one_click_bet_check, login_check
+from functions import open_link, bot, teams_icon_cutter, screenshot, one_click_bet_check, login_check, \
+    scrollbar_position_check
 import abandoned_boys
 import var
 import pyautogui
@@ -15,8 +16,13 @@ def live_Ebasketball(teams, bet_option, bet_team, bet_option_for_msg, send_msg):
         teams = teams_icon_cutter(teams)
         teams_len = len(teams)
         print(teams)
-        login_check()
-        open_link(bet_name)
+        login = login_check()
+        if not login:
+            return
+        match = open_link(bet_name)
+        if not match:
+            return
+        scrollbar_position_check()
         one_click_bet_check()
         for word in range(0, teams_len):
             if re.match(rf'{bet_name.strip().lower()}', str(teams[word].strip().lower())):
