@@ -35,28 +35,6 @@ def one_click_bet_check():
         one_click_bet_check()
 
 
-def login_check():
-    n = 0
-    pyautogui.click(x=997, y=59)
-    time.sleep(1)
-    pyautogui.click(x=849, y=477)
-    time.sleep(1)
-    pyautogui.write('balance')
-    time.sleep(1)
-    if pyautogui.pixelMatchesColor(940, 95, (56, 216, 120)):
-        return True
-    else:
-        pyautogui.hotkey('f5')
-        time.sleep(2)
-        n += 1
-        if n > 2:
-            send_msg = 'Что-то с логином'
-            screenshot(send_msg)
-            return False
-        else:
-            login_check()
-
-
 def game_check():
     if pyautogui.pixelMatchesColor(813, 266, (251, 251, 251)):
         send_msg = 'Матч не найден'
