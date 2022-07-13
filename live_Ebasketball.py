@@ -3,6 +3,7 @@ from functions import open_link, bot, teams_icon_cutter, screenshot, one_click_b
 import abandoned_boys
 import var
 import pyautogui
+import time
 
 
 def live_Ebasketball(teams, bet_option, bet_team, bet_option_for_msg, send_msg):
