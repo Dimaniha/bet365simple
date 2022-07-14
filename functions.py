@@ -32,7 +32,6 @@ def one_click_bet_check():
     else:
         pyautogui.click(x=683, y=206)
         time.sleep(2)
-        one_click_bet_check()
 
 
 def game_check():
