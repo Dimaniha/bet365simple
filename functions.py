@@ -13,7 +13,7 @@ def open_link(name):
     pyautogui.click(x=681, y=93)
     time.sleep(1)
     pyautogui.write(name)
-    time.sleep(2)
+    time.sleep(4)
     match = game_check()
     if not match:
         return False
@@ -39,6 +39,7 @@ def game_check():
     if pyautogui.pixelMatchesColor(813, 266, (251, 251, 251)):
         send_msg = 'Матч не найден'
         screenshot(send_msg)
+        pyautogui.hotkey('esc')
         return False
     else:
         return True
