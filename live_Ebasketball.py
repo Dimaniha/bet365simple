@@ -1,5 +1,6 @@
 import re
-from functions import open_link, bot, teams_icon_cutter, screenshot, one_click_bet_check, scrollbar_position_check
+from functions import open_link, bot, teams_icon_cutter, screenshot, one_click_bet_check, scrollbar_position_check, \
+    point_determining
 import abandoned_boys
 import var
 import pyautogui
@@ -23,16 +24,10 @@ def live_Ebasketball(teams, bet_option, bet_team, bet_option_for_msg, send_msg):
             return
         scrollbar_position_check()
         one_click_bet_check()
-        for word in range(0, teams_len):
-            if re.match(rf'{bet_name.strip().lower()}', str(teams[word].strip().lower())):
-                send_msg['msg'] = f'{var.bot_number}: успешно поставил на {bet_option_for_msg}'
-                if word == 0:  # column 1
-                    print("column 1")
-                    point = [272, 387]
-                    break
-                else:  # column 2
-                    print("column 2")
-                    point = [592, 387]
-                    break
+        if not pyautogui.pixelMatchesColor(891, 177, (37, 62, 91)):
+            point = point_determining(teams_len, bet_name, teams, bet_option_for_msg, send_msg)
+            pyautogui.click(x=point[0], y=point[1])
+            time.sleep(3)
+            one_click_bet_check()
         pyautogui.click(x=point[0], y=point[1])
         screenshot(send_msg['msg'])

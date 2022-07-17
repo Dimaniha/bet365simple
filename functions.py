@@ -50,6 +50,20 @@ def scrollbar_position_check():
         pyautogui.click(clicks=2)
 
 
+def point_determining(teams_len, bet_name, teams, bet_option_for_msg, send_msg):
+    for word in range(0, teams_len):
+        if re.match(rf'{bet_name.strip().lower()}', str(teams[word].strip().lower())):
+            send_msg['msg'] = f'{var.bot_number}: успешно поставил на {bet_option_for_msg}'
+            if word == 0:  # column 1
+                print("column 1")
+                point = [272, 387]
+                return point
+            else:  # column 2
+                print("column 2")
+                point = [592, 387]
+                return point
+
+
 def screenshot(send_msg):
     myScreenshot = pyautogui.screenshot()
     myScreenshot.save(var.feedback_screenshot)
