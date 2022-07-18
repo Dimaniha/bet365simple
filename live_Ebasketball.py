@@ -24,8 +24,8 @@ def live_Ebasketball(teams, bet_option, bet_team, bet_option_for_msg, send_msg):
             return
         scrollbar_position_check()
         one_click_bet_check()
+        point = point_determining(teams_len, bet_name, teams, bet_option_for_msg, send_msg)
         if not pyautogui.pixelMatchesColor(891, 177, (37, 62, 91)):
-            point = point_determining(teams_len, bet_name, teams, bet_option_for_msg, send_msg)
             pyautogui.click(x=point[0], y=point[1])
             time.sleep(3)
             one_click_bet_check()
